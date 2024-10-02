@@ -23,6 +23,7 @@ class Gameplay:
         while True:
             if count == 2:
                 break
+            
             # Display Title and Program Information
             self.display_Manager.DisplayProgramInfo()
             self.display_Manager.DisplayPokemonSelection(self.game_Manager.GetPokemonInfo())  
@@ -40,7 +41,11 @@ class Gameplay:
             # Clear the Console for better UX
             print("\033c", end="")
         
+        # =====================================
+        # Pokemon Selection for Battle
+        # ===================================
+        self.display_Manager.DisplayPlayersSelectedPokemons(self.game_Manager.GetPlayer_1_SelectedPokemon(), self.game_Manager.GetPlayer_2_SelectedPokemon())
         
 
-if __name__ == "__main__":  #
+if __name__ == "__main__":
     Gameplay()
