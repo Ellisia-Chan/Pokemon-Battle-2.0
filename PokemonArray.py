@@ -1,5 +1,5 @@
 pokemon_Array = [
-    # Pokemon,  Health, Power, poisons, potions
+    # [Name, Health, Power, Poisons, Potions]
     ["Pikachu", 100, 55, 0, 5],
     ["Charmander", 120, 60, 1, 3],
     ["Bulbasaur", 90, 50, 2, 4],
@@ -13,4 +13,17 @@ pokemon_Array = [
 ]
 
 def GetPokemonArray() -> list:
+    # ============================================
+    # Returns the pokemon_Array.
+    #
+    # Return:
+    #     list: A 2D list where each sublist contains the following:
+    #     [Name (str), Health (int), Power (int), Poisons (int), Potions (int)].
+    # ============================================
     return pokemon_Array
+
+
+# index = [0, 1, 2, 3]
+
+# for i in index:
+#     print(pokemon_Array[i])
