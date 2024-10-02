@@ -21,9 +21,3 @@ def GetPokemonArray() -> list:
     #     [Name (str), Health (int), Power (int), Poisons (int), Potions (int)].
     # ============================================
     return pokemon_Array
-
-
-# index = [0, 1, 2, 3]
-
-# for i in index:
-#     print(pokemon_Array[i])
