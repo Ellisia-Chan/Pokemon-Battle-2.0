@@ -20,12 +20,12 @@ class Display:
         print(table)
         print()
     
-    def DisplayPlayersSelectedPokemons(self, player1, player2):
+    def DisplayPlayersSelectedPokemons(self, player1, player2, player1_battle_pokemon, player2_battle_pokemon):
         table1 = PrettyTable()
         table2 = PrettyTable()
         
-        table1.field_names = ["Pokemon", "Health", "Power", "Poison", "Potion"]
-        table2.field_names = ["Pokemon", "Health", "Power", "Poison", "Potion"]
+        table1.field_names = ["Index", "Pokemon", "Health", "Power", "Poison", "Potion"]
+        table2.field_names = ["Index", "Pokemon", "Health", "Power", "Poison", "Potion"]
         
         for i in range(len(player1)):
             # Player 1 
@@ -35,7 +35,7 @@ class Display:
             player1_power = player1_index[2]
             player1_poisons = player1_index[3]
             player1_potions = player1_index[4]
-            table1.add_row([player1_pokemon, player1_health, player1_power, player1_poisons, player1_potions])
+            table1.add_row([i+1, player1_pokemon, player1_health, player1_power, player1_poisons, player1_potions])
         
             # Player 2
             player2_index = player2[i]
@@ -44,7 +44,7 @@ class Display:
             player2_power = player2_index[2]
             player2_poisons = player2_index[3]
             player2_potions = player2_index[4]
-            table2.add_row([player2_pokemon, player2_health, player2_power, player2_poisons, player2_potions])
+            table2.add_row([i+1, player2_pokemon, player2_health, player2_power, player2_poisons, player2_potions])
             
         table1_str = table1.get_string().splitlines()
         table2_str = table2.get_string().splitlines()
@@ -52,8 +52,28 @@ class Display:
         combined_Table = ""
         for row1, row2 in zip(table1_str, table2_str):
             combined_Table += f"{row1}  {row2}\n"
-            
+        
+        print("{:<23}{:<58}{:<0}".format(
+            "",
+            "Player 1",
+            "Player 2"   
+        ))
         print(combined_Table)
-        print()
+        
+        if player1_battle_pokemon is None:
+            player1_battle_pokemon = ""
+        else:
+            player1_battle_pokemon = f"🔥 {player1_battle_pokemon[0]} 🔥"
+            
+        if player2_battle_pokemon is None:
+            player2_battle_pokemon = ""
+        else:    
+            player2_battle_pokemon = f"🔥 {player2_battle_pokemon[0]} 🔥"
+            
+        print("{:<10}{:<60}{:<0}".format(
+            "",
+            f"Player 1 Pokemon: {player1_battle_pokemon}",
+            f"Player 2 Pokemon: {player2_battle_pokemon}\n"
+        ))
             
             
