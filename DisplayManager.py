@@ -1,10 +1,10 @@
 from prettytable import PrettyTable
 
-class Display:
-    def DisplayProgramInfo(self):
+class DisplayManager:
+    def DisplayProgramInfo(self) -> None:
         print("{:>20}{:>0}".format("", "Pokemon Battle"))
         
-    def DisplayPokemonSelection(self, pokemon_List):
+    def DisplayPokemonSelection(self, pokemon_List) -> None:
         table = PrettyTable()
 
         table.field_names = ["Index", "Pokemon", "Health", "Power", "Poison", "Potion"]
@@ -20,13 +20,13 @@ class Display:
         print(table)
         print()
     
-    def DisplayPlayersSelectedPokemons(self, player1, player2, player1_battle_pokemon, player2_battle_pokemon):
+    def DisplayPlayersSelectedPokemons(self, player1, player2, player1_battle_pokemon, player2_battle_pokemon, count) -> None:
         table1 = PrettyTable()
         table2 = PrettyTable()
         
         table1.field_names = ["Index", "Pokemon", "Health", "Power", "Poison", "Potion"]
         table2.field_names = ["Index", "Pokemon", "Health", "Power", "Poison", "Potion"]
-        
+
         for i in range(len(player1)):
             # Player 1 
             player1_index = player1[i]
@@ -35,8 +35,12 @@ class Display:
             player1_power = player1_index[2]
             player1_poisons = player1_index[3]
             player1_potions = player1_index[4]
-            table1.add_row([i+1, player1_pokemon, player1_health, player1_power, player1_poisons, player1_potions])
-        
+
+            if count == 0:
+                table1.add_row([i+1, player1_pokemon, player1_health, player1_power, player1_poisons, player1_potions])
+            else:
+                table1.add_row([i+1, player1_pokemon, "?", "?", "?", "?"])
+
             # Player 2
             player2_index = player2[i]
             player2_pokemon = player2_index[0]
@@ -44,8 +48,14 @@ class Display:
             player2_power = player2_index[2]
             player2_poisons = player2_index[3]
             player2_potions = player2_index[4]
-            table2.add_row([i+1, player2_pokemon, player2_health, player2_power, player2_poisons, player2_potions])
-            
+
+            if count == 1:
+                table2.add_row([i+1, player2_pokemon, player2_health, player2_power, player2_poisons, player2_potions])
+            else:
+                table2.add_row([i+1, player2_pokemon, "?", "?", "?", "?"])
+
+
+        
         table1_str = table1.get_string().splitlines()
         table2_str = table2.get_string().splitlines()
         
@@ -59,7 +69,7 @@ class Display:
             "Player 2"   
         ))
         print(combined_Table)
-        
+    
         if player1_battle_pokemon is None:
             player1_battle_pokemon = ""
         else:
@@ -75,5 +85,6 @@ class Display:
             f"Player 1 Pokemon: {player1_battle_pokemon}",
             f"Player 2 Pokemon: {player2_battle_pokemon}\n"
         ))
+
             
             

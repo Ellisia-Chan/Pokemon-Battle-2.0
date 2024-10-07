@@ -26,87 +26,92 @@ class GameManager:
     # in the pokemon selection table
     # ==============================================       
     def PokemonArraySelection(self, index) -> bool:
-        selected_indexes = set()
+        selected_indexes = []
         items_to_remove = []
-        
+
+        def validate_selection(selected, max_limit):
+            if len(selected) == 0:
+                print("No Selected Pokemon. Please Try Again!")
+                return True
+            if len(selected) > max_limit:
+                print(f"Selected Pokemons is more than {max_limit}. Please Try Again!")
+                return True
+            return False
+
+        def process_selection(selected, player_array):
+            for item in selected:
+                idx = item - 1
+                if idx >= len(self.pokemon_array):
+                    print("Number is Out of Range. Please Try Again!")
+                    return True
+                if idx in selected_indexes:
+                    print("Duplicate Selection. Please Try Again!")
+                    player_array.clear()
+                    return True
+                selected_indexes.append(idx)
+                player_array.append(self.pokemon_array[idx])
+                items_to_remove.append(idx)
+            return False
+
         if index == 0:
             print("Select a Maximum of 4 Pokemons\n")
             self.player_1_index = list(map(int, input("Player 1 select sa Pokemon: ").split(" ")))
-            
-            if len(self.player_1_index) == 0:
-                print("No Selected Pokemon. Please Try Again!")
+
+            if validate_selection(self.player_1_index, 4):
                 return True
-            elif len(self.player_1_index) > 4:
-                print("Selected Pokemon is more than 4. Please Try Again!")
+            if process_selection(self.player_1_index, self.player_1_array):
                 return True
-            else:
-                for items in self.player_1_index:
-                    if items - 1 >= len(self.pokemon_array):
-                        print("Number is Out of Range. Please Try Again!")
-                        return True
-                    elif items - 1 in selected_indexes:
-                        print("Duplicate Selection. Please Try Again!")
-                        return True
-                    
-                    # All conditions are met and append the items in the index and selected pokemon array
-                    selected_indexes.add(items - 1)
-                    self.player_1_array.append(self.pokemon_array[items - 1])
-                    items_to_remove.append(items - 1)
-                
-                for items in sorted(items_to_remove, reverse=True):
-                    self.pokemon_array.pop(items)      
-                return False           
         else:
             print(f"Please Select {len(self.player_1_index)} Pokemons")
             self.player_2_index = list(map(int, input("Player 2 selects a Pokemon: ").split(" ")))
-            
-            if len(self.player_2_index) == 0:
-                print("No Selected Pokemon. Please Try Again!")
+
+            if validate_selection(self.player_2_index, len(self.player_1_index)):
                 return True
-            elif len(self.player_2_index) > len(self.player_1_index):
-                print(f"Selected Pokemons is more than {len(self.player_1_index)}. Please Try Again!")
-                return True
-            elif len(self.player_2_index) < len(self.player_1_index):
+            if len(self.player_2_index) < len(self.player_1_index):
                 print(f"Selected Pokemons is less than {len(self.player_1_index)}. Please Try Again!")
                 return True
-            else:
-                for items in self.player_2_index:
-                    if items - 1 >= len(self.pokemon_array):
-                        print("Number is Out of Range. Please Try Again!")
-                        return True
-                                    
-                    if items - 1 in selected_indexes:
-                        print("Duplicate Selection. Please Try Again!")
-                        return True
-                    
-                    # All conditions are met and append the items in the index and selected pokemon array
-                    selected_indexes.add(items - 1)
-                    self.player_2_array.append(self.pokemon_array[items - 1])
-                    items_to_remove.append(items - 1)
-                
-                for items in sorted(items_to_remove, reverse=True):
-                    self.pokemon_array.pop(items)
-                return False
+            if process_selection(self.player_2_index, self.player_2_array):
+                return True
+
+        for item in sorted(items_to_remove, reverse=True):
+            self.pokemon_array.pop(item)       
+        return False
+
     
-    def BattlePokemonSelection(self, index):
+    def BattlePokemonSelection(self, index) -> bool:
         if index == 0:
             player1_selection = int(input("Player 1 Select a Pokemon for Battle: "))
             
             if len(str(player1_selection)) == 0:
                 print("No Selected Pokemon. Please Try Again!")
                 return True
-            
-            self.player_1_selected_Pokemon = self.player_1_array[player1_selection - 1]
-            return False
+            elif player1_selection > len(self.player_1_array):
+                print(f"Selected Index is greater than {len(self.player_1_array)}")
+                return True
+            elif player1_selection <= 0:
+                print(f"Selected Index is less than {len(self.player_1_array)}")
+                return True
+            else:
+                self.player_1_selected_Pokemon = self.player_1_array[player1_selection - 1]
+                return False
         else:
             player2_selection = int(input("Player 2 Select a Pokemon for Battle: "))
             
             if len(str(player2_selection)) == 0:
                 print("No Selected Pokemon. Please Try Again!")
                 return True
-            
-            self.player_2_selected_Pokemon = self.player_2_array[player2_selection - 1]
-            return False
+            elif player2_selection > len(self.player_2_array):
+                print(f"Selected Index is greater than {len(self.player_2_array)}")
+                return True
+            elif player2_selection <= 0:
+                print(f"Selected Index is less than {len(self.player_2_array)}")
+                return True
+            else:
+                self.player_2_selected_Pokemon = self.player_2_array[player2_selection - 1]
+                return False
+        
+    def RandomPowerIncrease(self):
+        pass
                               
     # ==================================
     # Methods for Returning Values
