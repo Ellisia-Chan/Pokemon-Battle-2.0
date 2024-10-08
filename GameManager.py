@@ -6,7 +6,8 @@ class GameManager:
         # Pokemon Array
         # Contains the list of the available pokemons
         # ==============================================
-        self.pokemon_array = list(pa.GetPokemonArray())
+        pokemonArray = pa.PokemonArray()
+        self.pokemon_array = list(pokemonArray.GetPokemonArray())
         
         # ==============================================
         # Player Pokemon Selection Array
@@ -79,36 +80,20 @@ class GameManager:
 
     
     def BattlePokemonSelection(self, index) -> bool:
-        if index == 0:
-            player1_selection = int(input("Player 1 Select a Pokemon for Battle: "))
-            
-            if len(str(player1_selection)) == 0:
-                print("No Selected Pokemon. Please Try Again!")
-                return True
-            elif player1_selection > len(self.player_1_array):
-                print(f"Selected Index is greater than {len(self.player_1_array)}")
-                return True
-            elif player1_selection <= 0:
-                print(f"Selected Index is less than {len(self.player_1_array)}")
-                return True
-            else:
-                self.player_1_selected_Pokemon = self.player_1_array[player1_selection - 1]
-                return False
+        player_selection = int(input(f"Player {index + 1} Select a Pokemon for Battle: "))
+        player_array = self.player_1_array if index == 0 else self.player_2_array
+        selected_pokemon_attr = 'player_1_selected_Pokemon' if index == 0 else 'player_2_selected_Pokemon'
+
+        if player_selection <= 0:
+            print(f"Selected Index is less than or equal to zero. Please try again.")
+            return True
+        elif player_selection > len(player_array):
+            print(f"Selected Index is greater than {len(player_array)}. Please try again.")
+            return True
         else:
-            player2_selection = int(input("Player 2 Select a Pokemon for Battle: "))
-            
-            if len(str(player2_selection)) == 0:
-                print("No Selected Pokemon. Please Try Again!")
-                return True
-            elif player2_selection > len(self.player_2_array):
-                print(f"Selected Index is greater than {len(self.player_2_array)}")
-                return True
-            elif player2_selection <= 0:
-                print(f"Selected Index is less than {len(self.player_2_array)}")
-                return True
-            else:
-                self.player_2_selected_Pokemon = self.player_2_array[player2_selection - 1]
-                return False
+            setattr(self, selected_pokemon_attr, player_array[player_selection - 1])
+            return False
+
         
     def RandomPowerIncrease(self):
         pass

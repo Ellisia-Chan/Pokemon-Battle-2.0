@@ -54,8 +54,6 @@ class DisplayManager:
             else:
                 table2.add_row([i+1, player2_pokemon, "?", "?", "?", "?"])
 
-
-        
         table1_str = table1.get_string().splitlines()
         table2_str = table2.get_string().splitlines()
         
@@ -86,5 +84,7 @@ class DisplayManager:
             f"Player 2 Pokemon: {player2_battle_pokemon}\n"
         ))
 
+    def DisplayBattlePreparation(self):
+        pass
             
             

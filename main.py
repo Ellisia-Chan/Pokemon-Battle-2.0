@@ -23,6 +23,18 @@ class Gameplay:
         # ======================================
         # Pokemon Group Selection for player 1 and 2
         # ======================================
+        self.PokemonArraySelection()
+        
+        # =====================================
+        # Pokemon Selection for battle
+        # =====================================
+        self.Battle_Pokemon_Selection()
+
+    def PokemonArraySelection(self):
+        # ==============================
+        #  Pokemon array selection for
+        #  both Player
+        # ==============================
         count = 0
         while count != 2:
             try:      
@@ -46,14 +58,7 @@ class Gameplay:
                 time.sleep(1)
                 print("\033c", end="")
                 continue
-        
-        # =====================================
-        # Pokemon Selection for battle
-        # =====================================
-        self.Battle_Pokemon_Selection()
-
-
-        
+            
     def Battle_Pokemon_Selection(self) -> None:        
         # =====================================
         # Pokemon Selection for Battle
@@ -62,10 +67,10 @@ class Gameplay:
         while count != 2:
             try:
                 self.display_Manager.DisplayPlayersSelectedPokemons(self.game_Manager.GetPlayer_1_SelectedPokemon(),
-                                                                self.game_Manager.GetPlayer_2_SelectedPokemon(),
-                                                                self.game_Manager.GetPlayer_1_BattlePokemon(),
-                                                                self.game_Manager.GetPlayer_2_BattlePokemon(),
-                                                                count)
+                        self.game_Manager.GetPlayer_2_SelectedPokemon(),
+                        self.game_Manager.GetPlayer_1_BattlePokemon(),
+                        self.game_Manager.GetPlayer_2_BattlePokemon(),
+                        count)
                 selection_Errors = self.game_Manager.BattlePokemonSelection(count)
                 
                 # Check IndexError for user input selections
@@ -86,12 +91,13 @@ class Gameplay:
                 continue
         else:
             self.display_Manager.DisplayPlayersSelectedPokemons(self.game_Manager.GetPlayer_1_SelectedPokemon(),
-                                                                self.game_Manager.GetPlayer_2_SelectedPokemon(),
-                                                                self.game_Manager.GetPlayer_1_BattlePokemon(),
-                                                                self.game_Manager.GetPlayer_2_BattlePokemon(),
-                                                                count) 
-            time.sleep(2)
-            print("\033c", end="")
+                    self.game_Manager.GetPlayer_2_SelectedPokemon(),
+                    self.game_Manager.GetPlayer_1_BattlePokemon(),
+                    self.game_Manager.GetPlayer_2_BattlePokemon(),
+                    count) 
+            
+        time.sleep(2)
+        print("\033c", end="")
             
 if __name__ == "__main__":
     Gameplay()
