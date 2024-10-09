@@ -1,4 +1,5 @@
 import PokemonArray as pa
+import random
 
 class GameManager:
     def __init__(self) -> None:
@@ -18,8 +19,17 @@ class GameManager:
         self.player_2_array = []
         self.player_1_index = []
         self.player_2_index = []
-        self.player_1_selected_Pokemon = None
-        self.player_2_selected_Pokemon = None
+        self.player_1_selected_Pokemon = []
+        self.player_2_selected_Pokemon = []
+        
+        # =======================================
+        # Stats holder for previous values for
+        # health, poison and potion
+        # =======================================
+        self.player_1_previous_health = None
+        self.player_2_previous_health = None
+        self.player_1_previous_power = None
+        self.player_2_previous_power = None
      
     # ==============================================
     # Pokemon Selection Method
@@ -78,7 +88,10 @@ class GameManager:
             self.pokemon_array.pop(item)       
         return False
 
-    
+    # ===========================================
+    # Selection of pokemon that will be use for
+    # Battle
+    # ==========================================
     def BattlePokemonSelection(self, index) -> bool:
         player_selection = int(input(f"Player {index + 1} Select a Pokemon for Battle: "))
         player_array = self.player_1_array if index == 0 else self.player_2_array
@@ -92,12 +105,65 @@ class GameManager:
             return True
         else:
             setattr(self, selected_pokemon_attr, player_array[player_selection - 1])
+            selected_pokemon = getattr(self, selected_pokemon_attr)
+            selected_pokemon[5] = True
+            
             return False
-
+    
+    def BattlePreparation(self, index) -> bool:
+        player_selected = self.player_1_selected_Pokemon if index == 0 else self.player_2_selected_Pokemon
+        opponent_selected = self.player_2_selected_Pokemon if index == 0 else self.player_1_selected_Pokemon
         
-    def RandomPowerIncrease(self):
-        pass
-                              
+        def __UsePotion(player_selected):
+            percentage = random.choice([0.50, 0.30, 0.10])
+            power_increase = int(player_selected[2] * percentage)
+            player_selected[2] += power_increase
+            player_selected[4] -= 1
+        
+        def __UsePoison(opponent):
+            percentage = random.choice([0.50, 0.30, 0.10])
+            power_decrease = int(opponent[2] * percentage)
+            opponent[2] -= power_decrease
+            opponent[2] = max(opponent[2], 1)
+            player_selected[3] -= 1
+        
+        if player_selected[3] == 0 and player_selected[4] == 0:
+            print("No available Poison and Potions")
+            input("Press enter to continue\n")
+            return
+        else:
+            if player_selected[3] != 0:
+                use_poison = str(input("Use poison to the opponent? [Y/N]: ")).lower()
+                
+                if use_poison == "y":
+                    __UsePoison(opponent_selected)
+                    print("Poison Applied\n")
+                elif use_poison == "n":
+                    print("No Poison used\n")
+                else:
+                    print("Invalid Input. Please Try Again!")
+                    return True
+            else:
+                print("No available Poison")
+                input("Press enter to continue\n")
+            
+            if player_selected[4] != 0:
+                use_poison = str(input("Use Potion to Increase Power? [Y/N]: ")).lower()    
+                if use_poison == "y":
+                    __UsePotion(player_selected)
+                    print("Potion Applied\n")                   
+                elif use_poison == "n":
+                    print("No Potion used\n")
+                else:
+                    print("Invalid Input. Please Try Again!")
+                    return True
+            else:
+                print("No available Potion")
+                input("Press enter to continue\n")      
+    
+    
+        
+                             
     # ==================================
     # Methods for Returning Values
     # ==================================

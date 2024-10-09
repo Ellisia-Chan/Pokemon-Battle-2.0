@@ -26,11 +26,19 @@ class Gameplay:
         self.PokemonArraySelection()
         
         # =====================================
-        # Pokemon Selection for battle
+        # Pokemon Battle Loop
         # =====================================
-        self.Battle_Pokemon_Selection()
+        all_pokemons_isUsed = False
+        while not all_pokemons_isUsed:
+            # Selection of pokemon that will be
+            # use for battle
+            self.Battle_Pokemon_Selection()
+            self.BattlePreparation()
+            print(self.game_Manager.player_1_selected_Pokemon)
+            print(self.game_Manager.player_2_selected_Pokemon)
+            input()
 
-    def PokemonArraySelection(self):
+    def PokemonArraySelection(self) -> None:
         # ==============================
         #  Pokemon array selection for
         #  both Player
@@ -94,10 +102,43 @@ class Gameplay:
                     self.game_Manager.GetPlayer_2_SelectedPokemon(),
                     self.game_Manager.GetPlayer_1_BattlePokemon(),
                     self.game_Manager.GetPlayer_2_BattlePokemon(),
-                    count) 
+                    count)
+            print("{:<45}{:<0}".format("", "Preparing Pokemons"))
+            time.sleep(2)   
+            print("\033c", end="")
             
-        time.sleep(2)
-        print("\033c", end="")
-            
+    def BattlePreparation(self) -> None:
+        # ==================================
+        # Battle Preparation where the players
+        # can decide whether they can use
+        # poison or postion
+        # ==================================
+        count = 0
+        while count != 2:
+            try:
+                if count == 0:
+                    self.display_Manager.DisplayBattlePreparation(self.game_Manager.GetPlayer_1_BattlePokemon(), count)
+                    selection_Errors = self.game_Manager.BattlePreparation(count)
+                elif count == 1:
+                    self.display_Manager.DisplayBattlePreparation(self.game_Manager.GetPlayer_2_BattlePokemon(), count)
+                    selection_Errors = self.game_Manager.BattlePreparation(count)
+                
+                # Check IndexError for user input selections
+                if selection_Errors: 
+                    time.sleep(1)
+                    print("\033c", end="")
+
+                    continue
+                count += 1
+                
+                # Clear the Console for better UX
+                print("\033c", end="")
+                
+            except ValueError:
+                print("Invald Input. Please Try Again!")
+                time.sleep(1)
+                print("\033c", end="")
+                continue
+                      
 if __name__ == "__main__":
     Gameplay()
