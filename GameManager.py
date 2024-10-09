@@ -24,7 +24,8 @@ class GameManager:
         
         # =======================================
         # Stats holder for previous values for
-        # health, poison and potion
+        # health and power after poison and potion
+        # are applied
         # =======================================
         self.player_1_previous_health = None
         self.player_2_previous_health = None
@@ -94,6 +95,7 @@ class GameManager:
     # ==========================================
     def BattlePokemonSelection(self, index) -> bool:
         player_selection = int(input(f"Player {index + 1} Select a Pokemon for Battle: "))
+        
         player_array = self.player_1_array if index == 0 else self.player_2_array
         selected_pokemon_attr = 'player_1_selected_Pokemon' if index == 0 else 'player_2_selected_Pokemon'
 
@@ -112,73 +114,103 @@ class GameManager:
     
     def BattlePreparation(self, index) -> bool:
         player_selected = self.player_1_selected_Pokemon if index == 0 else self.player_2_selected_Pokemon
-        opponent_selected = self.player_2_selected_Pokemon if index == 0 else self.player_1_selected_Pokemon
         
-        def __UsePotion(player_selected):
+        player_actions = {"use_potion": False, "use_poison": False}
+        
+         # Helper methods for potion and poison effects
+        def __UsePotion(player):
             percentage = random.choice([0.50, 0.30, 0.10])
-            power_increase = int(player_selected[2] * percentage)
-            player_selected[2] += power_increase
-            player_selected[4] -= 1
-        
-        def __UsePoison(opponent):
+            power_increase = int(player[2] * percentage)
+            player[2] += power_increase
+            player[4] -= 1  # Decrease potion count
+
+        def __UsePoison(opponent, player):
             percentage = random.choice([0.50, 0.30, 0.10])
             power_decrease = int(opponent[2] * percentage)
-            opponent[2] -= power_decrease
-            opponent[2] = max(opponent[2], 1)
-            player_selected[3] -= 1
+            opponent[2] = max(opponent[2] - power_decrease, 1)  # Minimum power of 1
+            player[3] -= 1  # Decrease poison count
         
         if player_selected[3] == 0 and player_selected[4] == 0:
             print("No available Poison and Potions")
             input("Press enter to continue\n")
-            return
-        else:
-            if player_selected[3] != 0:
-                use_poison = str(input("Use poison to the opponent? [Y/N]: ")).lower()
-                
-                if use_poison == "y":
-                    __UsePoison(opponent_selected)
-                    print("Poison Applied\n")
-                elif use_poison == "n":
-                    print("No Poison used\n")
-                else:
-                    print("Invalid Input. Please Try Again!")
-                    return True
-            else:
-                print("No available Poison")
-                input("Press enter to continue\n")
             
-            if player_selected[4] != 0:
-                use_poison = str(input("Use Potion to Increase Power? [Y/N]: ")).lower()    
-                if use_poison == "y":
-                    __UsePotion(player_selected)
-                    print("Potion Applied\n")                   
-                elif use_poison == "n":
-                    print("No Potion used\n")
-                else:
-                    print("Invalid Input. Please Try Again!")
-                    return True
+            if index == 0:
+                self.player_1_actions = player_actions
             else:
-                print("No available Potion")
-                input("Press enter to continue\n")      
-    
-    
+                self.player_2_actions = player_actions
+            return
         
-                             
+        # Poison action prompt refactored
+        if player_selected[3] > 0:
+            use_poison = input("Use poison on the opponent? [Y/N]: ").strip().lower()
+            if use_poison == "y":
+                player_actions["use_poison"] = True
+                print("Poison will be applied to the opponent\n")
+            elif use_poison == "n":
+                print("No Poison used\n")
+            else:
+                print("Invalid input. Please try again.")
+                return True
+        else:
+            print("No available Poison")
+            input("Press enter to continue\n")
+        
+        # Potion action prompt refactored
+        if player_selected[4] > 0:
+            use_potion = input("Use Potion to increase power? [Y/N]: ").strip().lower()
+            if use_potion == "y":
+                player_actions["use_potion"] = True
+                print("Potion will be applied\n")
+            elif use_potion == "n":
+                print("No Potion used\n")
+            else:
+                print("Invalid input. Please try again.")
+                return True
+        else:
+            print("No available Potion")
+            input("Press enter to continue\n")
+            
+        if index == 0:
+            self.player_1_actions = player_actions
+        else:
+            self.player_2_actions = player_actions
+            
+        if hasattr(self, "player_1_actions") and hasattr(self, "player_2_actions"):
+            self.player_1_previous_power = self.player_1_selected_Pokemon[2]
+            self.player_2_previous_power = self.player_2_selected_Pokemon[2]
+            
+            # Player 1 actions
+            if self.player_1_actions["use_potion"]:
+                __UsePotion(self.player_1_selected_Pokemon)
+            if self.player_1_actions["use_poison"]:
+                __UsePoison(self.player_2_selected_Pokemon, self.player_1_selected_Pokemon)
+            
+            # Player 2 actions
+            if self.player_2_actions["use_potion"]:
+                __UsePotion(self.player_2_selected_Pokemon)
+            if self.player_2_actions["use_poison"]:
+                __UsePoison(self.player_1_selected_Pokemon, self.player_2_selected_Pokemon)
+        
+            # Clear actions after applying to both players
+            del self.player_1_actions
+            del self.player_2_actions
+            
+        return False  
+
     # ==================================
     # Methods for Returning Values
     # ==================================
-    def GetPokemonInfo(self):
+    def GetPokemonInfo(self) -> list:
         return self.pokemon_array
     
-    def GetPlayer_1_SelectedPokemon(self):
+    def GetPlayer_1_SelectedPokemon(self) -> list:
         return self.player_1_array
     
-    def GetPlayer_2_SelectedPokemon(self):
+    def GetPlayer_2_SelectedPokemon(self) -> list:
         return self.player_2_array
     
-    def GetPlayer_1_BattlePokemon(self):
+    def GetPlayer_1_BattlePokemon(self) -> list:
         return self.player_1_selected_Pokemon
     
-    def GetPlayer_2_BattlePokemon(self):
+    def GetPlayer_2_BattlePokemon(self) -> list:
         return self.player_2_selected_Pokemon
-                

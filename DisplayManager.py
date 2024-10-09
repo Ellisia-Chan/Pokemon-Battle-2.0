@@ -6,6 +6,7 @@ class DisplayManager:
     # ==================================
     def DisplayProgramInfo(self) -> None:
         print("{:>20}{:>0}".format("", "Pokemon Battle"))
+        #print("".format("", "Select a list of pokemons"))
     
     # ====================================
     # Display a table of all the available
@@ -35,8 +36,8 @@ class DisplayManager:
         table1 = PrettyTable()
         table2 = PrettyTable()
         
-        table1.field_names = ["Index", "Pokemon", "Health", "Power", "Poison", "Potion"]
-        table2.field_names = ["Index", "Pokemon", "Health", "Power", "Poison", "Potion"]
+        table1.field_names = ["Index", "Pokemon", "Health", "Power", "Poison", "Potion", "Used"]
+        table2.field_names = ["Index", "Pokemon", "Health", "Power", "Poison", "Potion", "Used"]
 
         for i in range(len(player1)):
             # Player 1 
@@ -46,11 +47,20 @@ class DisplayManager:
             player1_power = player1_index[2]
             player1_poisons = player1_index[3]
             player1_potions = player1_index[4]
+            
+            player1_isUsed = "Yes" if player1_index[5] == True else "No"
+            
 
             if count == 0:
-                table1.add_row([i+1, player1_pokemon, player1_health, player1_power, player1_poisons, player1_potions])
+                table1.add_row([i+1,
+                                player1_pokemon,
+                                player1_health,
+                                player1_power,
+                                player1_poisons,
+                                player1_potions,
+                                player1_isUsed])
             else:
-                table1.add_row([i+1, player1_pokemon, "?", "?", "?", "?"])
+                table1.add_row([i+1, player1_pokemon, "?", "?", "?", "?", "?"])
 
             # Player 2
             player2_index = player2[i]
@@ -59,11 +69,19 @@ class DisplayManager:
             player2_power = player2_index[2]
             player2_poisons = player2_index[3]
             player2_potions = player2_index[4]
+            
+            player2_isUsed = "Yes" if player2_index[5] == True else "No"
 
             if count == 1:
-                table2.add_row([i+1, player2_pokemon, player2_health, player2_power, player2_poisons, player2_potions])
+                table2.add_row([i+1,
+                                player2_pokemon,
+                                player2_health,
+                                player2_power,
+                                player2_poisons,
+                                player2_potions,
+                                player2_isUsed])
             else:
-                table2.add_row([i+1, player2_pokemon, "?", "?", "?", "?"])
+                table2.add_row([i+1, player2_pokemon, "?", "?", "?", "?", "?"])
 
         table1_str = table1.get_string().splitlines()
         table2_str = table2.get_string().splitlines()

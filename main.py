@@ -34,8 +34,8 @@ class Gameplay:
             # use for battle
             self.Battle_Pokemon_Selection()
             self.BattlePreparation()
-            print(self.game_Manager.player_1_selected_Pokemon)
-            print(self.game_Manager.player_2_selected_Pokemon)
+            print(self.game_Manager.player_1_array)
+            print(self.game_Manager.player_2_array)
             input()
 
     def PokemonArraySelection(self) -> None:
