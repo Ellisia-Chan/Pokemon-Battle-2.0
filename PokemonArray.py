@@ -16,13 +16,13 @@ class PokemonArray:
             ["Mewtwo", 140, 90, 0, 0, False]
         ]
         
-        self.RandomeValueGenerator()
+        self.__RandomeValueGenerator()
 
-    def RandomeValueGenerator(self):
+    def __RandomeValueGenerator(self) -> None:
         # Poison and Potion
         for i in range(len(self.pokemon_Array)):
-            randomNum1 = random.randint(0, 5)
-            randomNum2 = random.randint(0, 5)
+            randomNum1 = random.randint(0, 3)
+            randomNum2 = random.randint(0, 3)
             
             self.pokemon_Array[i][3] = randomNum1
             self.pokemon_Array[i][4] = randomNum2

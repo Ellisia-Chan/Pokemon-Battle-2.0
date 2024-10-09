@@ -1,9 +1,16 @@
 from prettytable import PrettyTable
 
 class DisplayManager:
+    # ==================================
+    # Display the title of the program
+    # ==================================
     def DisplayProgramInfo(self) -> None:
         print("{:>20}{:>0}".format("", "Pokemon Battle"))
-        
+    
+    # ====================================
+    # Display a table of all the available
+    # Pokemons for the player to select
+    # ====================================   
     def DisplayPokemonSelection(self, pokemon_List) -> None:
         table = PrettyTable()
 
@@ -20,6 +27,10 @@ class DisplayManager:
         print(table)
         print()
     
+    # ===========================================
+    # Display a table of all the selected pokemons
+    # of both players
+    # ===========================================
     def DisplayPlayersSelectedPokemons(self, player1, player2, player1_battle_pokemon, player2_battle_pokemon, count) -> None:
         table1 = PrettyTable()
         table2 = PrettyTable()
@@ -61,6 +72,7 @@ class DisplayManager:
         for row1, row2 in zip(table1_str, table2_str):
             combined_Table += f"{row1}  {row2}\n"
         
+        print("{:>45}{:>0}".format("", "Battle Pokemon Selection")) 
         print("{:<23}{:<58}{:<0}".format(
             "",
             "Player 1",
@@ -68,12 +80,12 @@ class DisplayManager:
         ))
         print(combined_Table)
     
-        if player1_battle_pokemon is None:
+        if len(player1_battle_pokemon) == 0:
             player1_battle_pokemon = ""
         else:
             player1_battle_pokemon = f"🔥 {player1_battle_pokemon[0]} 🔥"
             
-        if player2_battle_pokemon is None:
+        if len(player2_battle_pokemon) == 0:
             player2_battle_pokemon = ""
         else:    
             player2_battle_pokemon = f"🔥 {player2_battle_pokemon[0]} 🔥"
@@ -83,8 +95,25 @@ class DisplayManager:
             f"Player 1 Pokemon: {player1_battle_pokemon}",
             f"Player 2 Pokemon: {player2_battle_pokemon}\n"
         ))
+        
+    # =======================================
+    # Display Player stats where they can use
+    # poison and potions
+    # ====================================== 
+    def DisplayBattlePreparation(self, player_selected, count) -> None:
+        table = PrettyTable()
 
-    def DisplayBattlePreparation(self):
-        pass
-            
-            
+        table.field_names = ["Pokemon", "Health", "Power", "Poison", "Potion"]
+        
+        player_pokemon = player_selected[0] 
+        player_health = player_selected[1]
+        player_power = player_selected[2]
+        player_poisons = player_selected[3]
+        player_potions = player_selected[4]
+        
+        table.add_row([player_pokemon, player_health, player_power, player_poisons, player_potions])
+        
+        print("{:>15}{:>0}".format("", "Battle Preparation"))
+        print("{:>20}{:>0}".format("", f"Player {count + 1}"))
+        print(table)
+        print()
