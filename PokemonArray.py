@@ -26,7 +26,7 @@ class PokemonArray:
             
             self.pokemon_Array[i][3] = randomNum1
             self.pokemon_Array[i][4] = randomNum2
-
+    @property
     def GetPokemonArray(self) -> list:
         # ============================================
         # Returns the pokemon_Array.
