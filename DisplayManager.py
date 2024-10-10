@@ -5,7 +5,7 @@ class DisplayManager:
     # Display the title of the program
     # ==================================
     def DisplayProgramInfo(self) -> None:
-        print("{:>20}{:>0}".format("", "Pokemon Battle"))
+        print("{:>20}{:>0}".format("", "🔥 Pokemon Battle 🔥"))
         #print("".format("", "Select a list of pokemons"))
     
     # ====================================
@@ -90,8 +90,8 @@ class DisplayManager:
         for row1, row2 in zip(table1_str, table2_str):
             combined_Table += f"{row1}  {row2}\n"
         
-        print("{:>45}{:>0}".format("", "Battle Pokemon Selection")) 
-        print("{:<23}{:<58}{:<0}".format(
+        print("{:>45}{:>0}".format("", "🔥 Battle Pokemon Selection 🔥")) 
+        print("{:<23}{:<65}{:<0}".format(
             "",
             "Player 1",
             "Player 2"   
@@ -135,3 +135,58 @@ class DisplayManager:
         print("{:>20}{:>0}".format("", f"Player {count + 1}"))
         print(table)
         print()
+    
+    # ===========================================
+    # Display The final stats of both pokemon
+    # this includes the poison and potion effects
+    # ===========================================
+    def DisplayMainBattleStats(self,
+        player1_pokemon, player2_pokemon,
+        player1_previousPower, player2_previousPower,
+        player1_powerIncrease: list, Player2_powerIncrease: list,
+        player1_powerDecrease: list, player2_powerDecrease: list) -> None:
+        previewTable1 = PrettyTable()
+        previewTable2 = PrettyTable()
+        
+        # Color for string formatting
+        GREEN = "\033[32m"
+        RED = "\033[31m"
+        
+        mainTable1 = PrettyTable()
+        mainTable2 = PrettyTable()
+        
+        previewTable1.field_names = ["Pokemon", "Health", "Power"]
+        previewTable2.field_names = ["Pokemon", "Health", "Power"]
+        mainTable1.field_names = ["Pokemon", "Health", "Power"]
+        mainTable2.field_names = ["Pokemon", "Health", "Power"]
+        
+        player1_index = player1_pokemon[0]
+        player1_pokemonName = player1_index[0]
+        player1_health = player1_index[1]
+        player1_power = player1_index[2]
+        
+        player2_index = player2_pokemon[0]
+        player2_pokemonName = player2_index[0]
+        player2_health = player2_index[1]
+        player2_power = player2_index[2]
+        
+        previewTable1.add_row([player1_pokemonName, "?", "?"])
+        previewTable2.add_row([player2_pokemonName, "?", "?"])
+        
+        previewTable1_str = previewTable1.get_string().splitlines()
+        previewTable2_str = previewTable2.get_string().splitlines()
+        
+        preview_combined_Table = ""
+        for row1, row2 in zip(previewTable1_str, previewTable2_str):
+            preview_combined_Table += f"{row1}  {row2}\n"
+        
+        print("{:<20}{:<20}{:<0}".format(
+            "",
+            "Player 1",
+            "Player 2"
+        ))
+        print(preview_combined_Table)
+        input("Press Enter to Begin Battle")
+        
+        
+        
