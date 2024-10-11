@@ -21,11 +21,12 @@ class PokemonArray:
     def __RandomeValueGenerator(self) -> None:
         # Poison and Potion
         for i in range(len(self.pokemon_Array)):
-            randomNum1 = random.randint(0, 5)
-            randomNum2 = random.randint(0, 5)
+            randomNum1 = random.randint(1, 6)
+            randomNum2 = random.randint(1, 6)
             
             self.pokemon_Array[i][3] = randomNum1
             self.pokemon_Array[i][4] = randomNum2
+            
     @property
     def GetPokemonArray(self) -> list:
         # ============================================

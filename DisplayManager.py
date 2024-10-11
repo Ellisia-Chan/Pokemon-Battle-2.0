@@ -6,8 +6,28 @@ class DisplayManager:
     # ==================================
     def DisplayProgramInfo(self) -> None:
         print("{:>20}{:>0}".format("", "🔥 Pokemon Battle 🔥"))
-        #print("".format("", "Select a list of pokemons"))
-    
+        print("INFO: Select 3-4 pokemon to be use for battle")
+        print("💉 Potion is used to increase your Power")    
+        print("💀 Poison is used to decrease opponents Power\n")
+        print("⚠ Potion and Poison affects only 1 battle")
+        print("⚠ New battle resets power to its base power")
+        print("⚠ base power changes depending if winner/loser\n")
+        print("🎉 Winner:")
+        print("Health increase by 10%")
+        print("Power increase by 5%\n")
+        print("💔 Loser:")
+        print("Health decrease by 5%")
+        print("power increase by 3%\n")
+        print("⚠ Every Battle both Player health is reduced by 2%")
+        print("⚠ Due to Fatigue\n")  
+        print("⚠ How To End Battle ⚠")
+        print("- To end battle, all pokemon for both players")
+        print("must be used\n")
+        
+        input("Press Enter To Start")
+        print("\033c", end="")
+        
+        
     # ====================================
     # Display a table of all the available
     # Pokemons for the player to select
@@ -133,7 +153,7 @@ class DisplayManager:
         
         table.add_row([player_pokemon, player_health, player_power, player_poisons, player_potions])
         
-        print("{:>15}{:>0}".format("", "Battle Preparation"))
+        print("{:>13}{:>0}".format("", "🔥 Battle Preparation 🔥"))
         print("{:>20}{:>0}".format("", f"Player {count + 1}"))
         print(table)
         print()
@@ -150,7 +170,8 @@ class DisplayManager:
         player1_powerIncrease: list,
         player2_powerIncrease: list,
         player1_powerDecrease: list,
-        player2_powerDecrease: list) -> None:
+        player2_powerDecrease: list,
+        battleNumber: int) -> None:
         previewTable1 = PrettyTable()
         previewTable2 = PrettyTable()
         
@@ -168,8 +189,30 @@ class DisplayManager:
                 player_final_power = f"{player_previousPower} -> {player_finalPower}"
             return player_final_power
         
-        def __ValidatePowerDetailsFormat(player_power_increase, player_power_decrease, player_previous_power, player_final_power):
-            pass 
+        def __ValidatePowerDetailsFormat(player_power_increase, player_power_decrease, player_previous_power, player_final_power) -> str:
+            details_str = ""
+            if len(player_power_increase) != 0:
+                details_str += f"Power Increase By Potion\n"
+                details_str += f"{player_previous_power} + {GREEN}{player_power_increase[1]}{RESET} = {GREEN}{player_power_increase[0]}{RESET}\n"      
+            else:
+                details_str += f"No Power Increase\n"
+                details_str += f" \n"
+                
+            if len(player_power_decrease) != 0:
+                if len(player_power_increase) != 0:
+                    player_power = player_power_increase[0]
+                else:
+                    player_power = player_previous_power
+                    
+                details_str += f"Power Decreased By Opponents Poison\n"
+                details_str += f"{player_power} - {RED}{player_power_decrease[1]}{RESET} = {RED}{player_power_decrease[0]}{RESET}\n"
+            else:
+                details_str += f"No Power Decreased\n"
+                details_str += f" \n"
+                           
+            details_str += f"{GREEN}Final Power: {player_final_power}{RESET}\n"
+
+            return details_str
         
         mainTable1 = PrettyTable()
         mainTable2 = PrettyTable()
@@ -199,13 +242,14 @@ class DisplayManager:
         for row1, row2 in zip(previewTable1_str, previewTable2_str):
             preview_combined_Table += f"{row1}  {row2}\n"
         
-        print("{:<20}{:<20}{:<0}".format(
+        print("{:<10}{:<30}{:<0}".format(
             "",
             "Player 1",
             "Player 2"
         ))
         print(preview_combined_Table)
         input("Press Enter to Begin Battle")
+        print("\033c", end="")
         
         # Main tables to display actual stats after battle
         mainTable1 = PrettyTable()
@@ -215,27 +259,49 @@ class DisplayManager:
         
         mainTable1.field_names = ["Pokemon", "Health", "Power"]
         mainTable2.field_names = ["Pokemon", "Health", "Power"]
+        statsDetailsTable1.field_names = ["Player 1"]
+        statsDetailsTable2.field_names = ["Player 2"]
           
         player1_final_power = __ValidateFinalPowerFormat(player1_power, player1_previousPower)
         player2_final_power = __ValidateFinalPowerFormat(player2_power, player2_previousPower)
-        player1_power_details = __ValidatePowerDetailsFormat(player1_powerIncrease, player1_powerDecrease, player1_previousPower, player1_final_power)
-        player2_power_details = __ValidatePowerDetailsFormat(player2_powerIncrease, player2_powerDecrease, player2_previousPower, player2_final_power)
+        
+        player1_power_details = __ValidatePowerDetailsFormat(player1_powerIncrease,
+                                                             player1_powerDecrease,
+                                                             player1_previousPower,
+                                                             player1_power)
+        
+        player2_power_details = __ValidatePowerDetailsFormat(player2_powerIncrease,
+                                                             player2_powerDecrease,
+                                                             player2_previousPower,
+                                                             player2_power)
         
         mainTable1.add_row([player1_pokemonName, player1_health, player1_final_power])
         mainTable2.add_row([player2_pokemonName, player2_health, player2_final_power])
+        statsDetailsTable1.add_row([player1_power_details])
+        statsDetailsTable2.add_row([player2_power_details])
         
         mainTable1_str = mainTable1.get_string().splitlines()
         mainTable2_str = mainTable2.get_string().splitlines()
+        statsDetailsTable1_str = statsDetailsTable1.get_string().splitlines()
+        statsDetailsTable2_str = statsDetailsTable2.get_string().splitlines()
         
         main_combined_Table = ""
+        stats_detail_combined_Table = ""
         for row1, row2, in zip(mainTable1_str, mainTable2_str):
             main_combined_Table += f"{row1}  {row2}\n"
         
-        print(main_combined_Table)
-        print(player1_powerIncrease)
-        print(player1_powerDecrease)
-        print()
-        print(player2_powerIncrease)
-        print(player2_powerDecrease)
+        for row1, row2, in zip(statsDetailsTable1_str, statsDetailsTable2_str):
+            stats_detail_combined_Table += f"{row1}  {row2}\n"
         
-        input()           
+        print("{:<30}{:<0}".format("", f"Battle {battleNumber+1}"))
+        print("{:<15}{:<30}{:<0}".format(
+            "",
+            "Player 1",
+            "Player 2"
+        ))        
+        print(main_combined_Table)
+        print(stats_detail_combined_Table)
+    
+    def DisplayBattleWinner(self, Winner):
+        input()
+        pass
