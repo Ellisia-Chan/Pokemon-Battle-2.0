@@ -41,11 +41,14 @@ class Gameplay:
         #  Pokemon array selection for
         #  both Player
         # ==============================
+        
+        # Display Title and Program Information
+        self.display_Manager.DisplayProgramInfo()
+        
         count = 0
         while count != 2:
-            try:      
-                # Display Title and Program Information
-                self.display_Manager.DisplayProgramInfo()
+            try: 
+                print("{:>20}{:>0}".format("", "🔥 Pokemon Battle 🔥"))     
                 self.display_Manager.DisplayPokemonSelection(self.game_Manager.GetPokemonInfo)  
                 
                 selection_Errors = self.game_Manager.PokemonArraySelection(count)
@@ -147,7 +150,7 @@ class Gameplay:
                 print("\033c", end="")
                 continue
         else:
-            print("{:>60}{:>0}".format(
+            print("{:<15}{:>0}".format(
                 "",
                 "Entering Battle Stage"
             ))
@@ -163,6 +166,13 @@ class Gameplay:
             self.game_Manager.GetPlayer_2_Selected_Pokemon_Power_Increase,
             self.game_Manager.GetPlayer_1_Selected_Pokemon_Power_decrease,
             self.game_Manager.GetPlayer_2_Selected_Pokemon_Power_decrease,
+            self.game_Manager.GetBattle_Number
+        )
+        self.game_Manager.SetBattle_Number = 1
+        
+        self.game_Manager.BattleWinner()  
+        self.display_Manager.DisplayBattleWinner(
+            self.game_Manager.Get_Battle_Winner
         )
                       
 if __name__ == "__main__":

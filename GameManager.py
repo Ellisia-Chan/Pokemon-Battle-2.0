@@ -1,5 +1,6 @@
 import PokemonArray as pa
 import random
+import time
 
 class GameManager:
     def __init__(self) -> None:
@@ -29,6 +30,12 @@ class GameManager:
         self.player_1_selected_Pokemon_Power_Decrease = []
         self.player_2_selected_Pokemon_Power_Increase = []
         self.player_2_selected_Pokemon_Power_Decrease = []
+        
+        # ==================================
+        # Battle Number counter and Winner
+        # ==================================
+        self.battle_number = 0
+        self.Battle_Winner = ""
         
         # =======================================
         # Stats holder for previous values for
@@ -74,7 +81,7 @@ class GameManager:
             return False
 
         if index == 0:
-            print("Select a Maximum of 4 Pokemons\n")
+            print("Select a Maximum of 4 Pokemons\nINFO: Select 3-4 Pokemons to use for battle (Ex. Input: 1 2 3 4)\n")
             self.player_1_index = list(map(int, input("Player 1 select sa Pokemon: ").split(" ")))
 
             if validate_selection(self.player_1_index, 4):
@@ -82,7 +89,7 @@ class GameManager:
             if process_selection(self.player_1_index, self.player_1_array):
                 return True
         else:
-            print(f"Please Select {len(self.player_1_index)} Pokemons")
+            print(f"Please Select {len(self.player_1_index)} Pokemons\nINFO: Select 3-4 Pokemons to use for battle (Ex. Input: 1 2 3 4)\n")
             self.player_2_index = list(map(int, input("Player 2 selects a Pokemon: ").split(" ")))
 
             if validate_selection(self.player_2_index, len(self.player_1_index)):
@@ -101,7 +108,8 @@ class GameManager:
     # Selection of pokemon that will be use for
     # Battle
     # ==========================================
-    def BattlePokemonSelection(self, index) -> bool:          
+    def BattlePokemonSelection(self, index) -> bool:
+        print("Select 1 pokemon to use for battle\n")        
         player_selection = int(input(f"Player {index + 1} Select a Pokemon for Battle: "))
         
         player_array = self.player_1_array if index == 0 else self.player_2_array
@@ -166,12 +174,15 @@ class GameManager:
         
         # Poison action prompt refactored
         if player_selected[3] > 0:
+            print("INFO: Poison Reduce Opponents Power by Random Percentage (10%, 30%, 50%)\n")
             use_poison = input("Use poison on the opponent? [Y/N]: ").strip().lower()
             if use_poison == "y":
                 player_actions["use_poison"] = True
                 print("Poison will be applied to the opponent\n")
+                time.sleep(1)
             elif use_poison == "n":
                 print("No Poison used\n")
+                time.sleep(1)
             else:
                 print("Invalid input. Please try again.")
                 return True
@@ -181,12 +192,15 @@ class GameManager:
         
         # Potion action prompt refactored
         if player_selected[4] > 0:
+            print("INFO: Potion Increase Your Pokemon Power by Random Percentage (10%, 30%, 50%)\n")
             use_potion = input("Use Potion to increase power? [Y/N]: ").strip().lower()
             if use_potion == "y":
                 player_actions["use_potion"] = True
                 print("Potion will be applied\n")
+                time.sleep(1)
             elif use_potion == "n":
                 print("No Potion used\n")
+                time.sleep(1)
             else:
                 print("Invalid input. Please try again.")
                 return True
@@ -237,7 +251,39 @@ class GameManager:
             del self.player_2_actions
             
         return False
-        
+    
+    def BattleWinner(self):
+        if self.player_1_selected_Pokemon[2] > self.player_2_selected_Pokemon[2]:
+            self.Battle_Winner = "Player 1"
+            
+            self.player_1_selected_Pokemon[1] += int(self.player_1_selected_Pokemon[1] * 0.10)
+            self.player_1_selected_Pokemon[2] = self.player_1_previous_power + int(self.player_1_previous_power * 0.05)
+            
+            self.player_2_selected_Pokemon[1] += int(self.player_2_selected_Pokemon[1] * 0.05)
+            self.player_2_selected_Pokemon[2] = self.player_2_previous_power + int(self.player_2_previous_power * 0.03)
+            
+            print(self.player_1_selected_Pokemon[2])
+            input()
+            
+        elif self.player_1_selected_Pokemon[2] < self.player_2_selected_Pokemon[2]:
+            self.Battle_Winner = "Player 2"
+            
+            self.player_2_selected_Pokemon[1] += int(self.player_2_selected_Pokemon[1] * 0.10)
+            self.player_2_selected_Pokemon[2] = self.player_2_previous_power + int(self.player_2_previous_power * 0.05)
+            
+            self.player_1_selected_Pokemon[1] += int(self.player_1_selected_Pokemon[1] * 0.05)
+            self.player_1_selected_Pokemon[2] = self.player_1_selected_Pokemon[2] + int(self.player_1_previous_power * 0.03)
+            
+            print(self.player_2_selected_Pokemon[2])
+            input()
+        else:
+            self.Battle_Winner = "Tie"
+            self.player_1_selected_Pokemon[2] = self.player_1_previous_power
+            self.player_2_selected_Pokemon[2] = self.player_2_previous_power
+    
+    def FatigueEffects(self):
+        pass
+    
     # =======================================
     # Method for setting Values
     # =======================================
@@ -314,3 +360,19 @@ class GameManager:
     @property
     def GetPlayer_2_Selected_Pokemon_Power_decrease(self) -> list:
         return self.player_2_selected_Pokemon_Power_Decrease
+    
+    # Return Battle Number
+    @property
+    def GetBattle_Number(self) -> int:
+        return self.battle_number
+    
+    # Increase Battle Number
+    @GetBattle_Number.setter
+    def SetBattle_Number(self, value) -> None:
+        if value < 0:
+            raise ValueError("Value cannot be negative")
+        self.battle_number += value
+    
+    @property
+    def Get_Battle_Winner(self):
+        return self.Battle_Winner
