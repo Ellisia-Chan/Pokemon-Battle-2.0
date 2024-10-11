@@ -128,17 +128,29 @@ class GameManager:
          # Helper methods for potion and poison effects
         def __UsePotion(player) -> int:
             percentage = random.choice([0.50, 0.30, 0.10])
+            
+            if percentage == 0.50: percentage_str = "50%" 
+            elif percentage == 0.30: percentage_str = "30%"
+            elif percentage == 0.10: percentage_str = "10%" 
+            
             power_increase = int(player[2] * percentage)
             player[2] += power_increase
             player[4] -= 1  # Decrease potion count
-            return power_increase, percentage
+            
+            return player[2], percentage_str
 
         def __UsePoison(opponent, player) -> int:
             percentage = random.choice([0.50, 0.30, 0.10])
+            
+            if percentage == 0.50: percentage_str = "50%" 
+            elif percentage == 0.30: percentage_str = "30%"
+            elif percentage == 0.10: percentage_str = "10%"
+            
             power_decrease = int(opponent[2] * percentage)
-            opponent[2] = max(opponent[2] - power_decrease, 1)  # Minimum power of 1
+            opponent_newPower = max((opponent[2] - power_decrease), 1)  # Minimum power of 1
             player[3] -= 1  # Decrease poison count
-            return power_decrease, percentage
+               
+            return opponent_newPower, percentage_str
         
         if player_selected[3] == 0 and player_selected[4] == 0:
             print("No available Poison and Potions")
@@ -146,8 +158,10 @@ class GameManager:
             
             if index == 0:
                 self.player_1_actions = player_actions
+                self.player_1_previous_power = self.player_1_selected_Pokemon[2]           
             else:
                 self.player_2_actions = player_actions
+                self.player_2_previous_power = self.player_2_selected_Pokemon[2]
             return
         
         # Poison action prompt refactored
@@ -189,26 +203,35 @@ class GameManager:
             self.player_1_previous_power = self.player_1_selected_Pokemon[2]
             self.player_2_previous_power = self.player_2_selected_Pokemon[2]
             
-            # Player 1 actions
+            power_Decrease_player1 = 0
+            power_Decrease_player2 = 0
+            
+            # Player 1|2 Potions Actions
             if self.player_1_actions["use_potion"]:
                 power_Increase, perct = __UsePotion(self.player_1_selected_Pokemon)
                 self.player_1_selected_Pokemon_Power_Increase.append(power_Increase)
                 self.player_1_selected_Pokemon_Power_Increase.append(perct)
-            if self.player_1_actions["use_poison"]:
-                power_Decrease, perct = __UsePoison(self.player_2_selected_Pokemon, self.player_1_selected_Pokemon)
-                self.player_2_selected_Pokemon_Power_Decrease.append(power_Decrease)
-                self.player_2_selected_Pokemon_Power_Decrease.append(perct)
                 
-            # Player 2 actions
             if self.player_2_actions["use_potion"]:
                 power_Increase, perct = __UsePotion(self.player_2_selected_Pokemon)
                 self.player_2_selected_Pokemon_Power_Increase.append(power_Increase)
-                self.player_2_selected_Pokemon_Power_Increase.append(perct)          
+                self.player_2_selected_Pokemon_Power_Increase.append(perct) 
+   
+            # Player 1|2 Poison Action
+            if self.player_1_actions["use_poison"]:
+                power_Decrease_player2, perct = __UsePoison(self.player_2_selected_Pokemon, self.player_1_selected_Pokemon)
+                self.player_2_selected_Pokemon_Power_Decrease.append(power_Decrease_player2)
+                self.player_2_selected_Pokemon_Power_Decrease.append(perct)
+                
             if self.player_2_actions["use_poison"]:
-                power_Decrease, perct = __UsePoison(self.player_1_selected_Pokemon, self.player_2_selected_Pokemon)
-                self.player_1_selected_Pokemon_Power_Decrease.append(power_Decrease)
+                power_Decrease_player1, perct = __UsePoison(self.player_1_selected_Pokemon, self.player_2_selected_Pokemon)
+                self.player_1_selected_Pokemon_Power_Decrease.append(power_Decrease_player1)
                 self.player_1_selected_Pokemon_Power_Decrease.append(perct)
-        
+
+            if power_Decrease_player1 != 0:
+                self.player_1_selected_Pokemon[2] = power_Decrease_player1
+            if power_Decrease_player2 != 0:
+                self.player_2_selected_Pokemon[2] = power_Decrease_player2
             # Clear actions after applying to both players
             del self.player_1_actions
             del self.player_2_actions
@@ -290,4 +313,4 @@ class GameManager:
     
     @property
     def GetPlayer_2_Selected_Pokemon_Power_decrease(self) -> list:
-        return self.player_1_selected_Pokemon_Power_Decrease
+        return self.player_2_selected_Pokemon_Power_Decrease

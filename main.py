@@ -70,6 +70,7 @@ class Gameplay:
         # Pokemon Selection for Battle
         # =====================================
         self.game_Manager.SetSelectedPokemonsToNull()
+        self.game_Manager.SetChangedPokemonPowerToNull() 
         
         count = 0
         while count != 2:
