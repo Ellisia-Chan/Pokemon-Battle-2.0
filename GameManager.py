@@ -243,9 +243,10 @@ class GameManager:
                 self.player_1_selected_Pokemon_Power_Decrease.append(perct)
 
             if power_Decrease_player1 != 0:
-                self.player_1_selected_Pokemon[2] = power_Decrease_player1
+                self.player_1_selected_Pokemon[2] = power_Decrease_player1   
             if power_Decrease_player2 != 0:
                 self.player_2_selected_Pokemon[2] = power_Decrease_player2
+                
             # Clear actions after applying to both players
             del self.player_1_actions
             del self.player_2_actions
@@ -253,31 +254,32 @@ class GameManager:
         return False
     
     def BattleWinner(self):
+        GREEN = "\033[32m"
+        RED = "\033[31m"
+        RESET = "\033[0m"
         if self.player_1_selected_Pokemon[2] > self.player_2_selected_Pokemon[2]:
             self.Battle_Winner = "Player 1"
+            self.power_difference_str = f"{GREEN}{self.player_1_selected_Pokemon[2]}{RESET} > {RED}{self.player_2_selected_Pokemon[2]}{RESET}"
             
             self.player_1_selected_Pokemon[1] += int(self.player_1_selected_Pokemon[1] * 0.10)
             self.player_1_selected_Pokemon[2] = self.player_1_previous_power + int(self.player_1_previous_power * 0.05)
             
             self.player_2_selected_Pokemon[1] += int(self.player_2_selected_Pokemon[1] * 0.05)
             self.player_2_selected_Pokemon[2] = self.player_2_previous_power + int(self.player_2_previous_power * 0.03)
-            
-            print(self.player_1_selected_Pokemon[2])
-            input()
-            
+                       
         elif self.player_1_selected_Pokemon[2] < self.player_2_selected_Pokemon[2]:
             self.Battle_Winner = "Player 2"
+            self.power_difference_str = f"{RED}{self.player_1_selected_Pokemon[2]}{RESET} < {GREEN}{self.player_2_selected_Pokemon[2]}{RESET}"
             
             self.player_2_selected_Pokemon[1] += int(self.player_2_selected_Pokemon[1] * 0.10)
             self.player_2_selected_Pokemon[2] = self.player_2_previous_power + int(self.player_2_previous_power * 0.05)
             
             self.player_1_selected_Pokemon[1] += int(self.player_1_selected_Pokemon[1] * 0.05)
-            self.player_1_selected_Pokemon[2] = self.player_1_selected_Pokemon[2] + int(self.player_1_previous_power * 0.03)
-            
-            print(self.player_2_selected_Pokemon[2])
-            input()
+            self.player_1_selected_Pokemon[2] = self.player_1_selected_Pokemon[2] + int(self.player_1_previous_power * 0.03)            
         else:
             self.Battle_Winner = "Tie"
+            self.power_difference_str = f"{self.player_1_selected_Pokemon[2]} == {self.player_2_selected_Pokemon[2]}"
+            
             self.player_1_selected_Pokemon[2] = self.player_1_previous_power
             self.player_2_selected_Pokemon[2] = self.player_2_previous_power
     
@@ -374,5 +376,9 @@ class GameManager:
         self.battle_number += value
     
     @property
-    def Get_Battle_Winner(self):
+    def Get_Battle_Winner(self) -> str:
         return self.Battle_Winner
+    
+    @property
+    def Get_Power_Difference_str(self) -> str:
+        return self.power_difference_str
