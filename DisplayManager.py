@@ -39,6 +39,9 @@ class DisplayManager:
         table1.field_names = ["Index", "Pokemon", "Health", "Power", "Poison", "Potion", "Used"]
         table2.field_names = ["Index", "Pokemon", "Health", "Power", "Poison", "Potion", "Used"]
 
+        GREEN = "\033[32m"
+        RED = "\033[31m"
+        RESET = "\033[0m"
         for i in range(len(player1)):
             # Player 1 
             player1_index = player1[i]
@@ -48,9 +51,8 @@ class DisplayManager:
             player1_poisons = player1_index[3]
             player1_potions = player1_index[4]
             
-            player1_isUsed = "Yes" if player1_index[5] == True else "No"
+            player1_isUsed = f"{GREEN}Yes{RESET}" if player1_index[5] == True else f"{RED}No{RESET}"
             
-
             if count == 0:
                 table1.add_row([i+1,
                                 player1_pokemon,
@@ -70,7 +72,7 @@ class DisplayManager:
             player2_poisons = player2_index[3]
             player2_potions = player2_index[4]
             
-            player2_isUsed = "Yes" if player2_index[5] == True else "No"
+            player2_isUsed = f"{GREEN}Yes{RESET}" if player2_index[5] == True else f"{RED}No{RESET}"
 
             if count == 1:
                 table2.add_row([i+1,
@@ -141,16 +143,33 @@ class DisplayManager:
     # this includes the poison and potion effects
     # ===========================================
     def DisplayMainBattleStats(self,
-        player1_pokemon, player2_pokemon,
-        player1_previousPower, player2_previousPower,
-        player1_powerIncrease: list, Player2_powerIncrease: list,
-        player1_powerDecrease: list, player2_powerDecrease: list) -> None:
+        player1_pokemon,
+        player2_pokemon,
+        player1_previousPower,
+        player2_previousPower,
+        player1_powerIncrease: list,
+        player2_powerIncrease: list,
+        player1_powerDecrease: list,
+        player2_powerDecrease: list) -> None:
         previewTable1 = PrettyTable()
         previewTable2 = PrettyTable()
         
         # Color for string formatting
         GREEN = "\033[32m"
         RED = "\033[31m"
+        RESET = "\033[0m"
+        
+        def __ValidateFinalPowerFormat(player_finalPower, player_previousPower) -> str:
+            if player_finalPower > player_previousPower :
+                player_final_power = f"{player_previousPower} -> {GREEN}{player_finalPower}{RESET}"
+            elif player_finalPower < player_previousPower:
+                player_final_power = f"{player_previousPower} -> {RED}{player_finalPower}{RESET}"
+            else:
+                player_final_power = f"{player_previousPower} -> {player_finalPower}"
+            return player_final_power
+        
+        def __ValidatePowerDetailsFormat(player_power_increase, player_power_decrease, player_previous_power, player_final_power):
+            pass 
         
         mainTable1 = PrettyTable()
         mainTable2 = PrettyTable()
@@ -188,5 +207,35 @@ class DisplayManager:
         print(preview_combined_Table)
         input("Press Enter to Begin Battle")
         
+        # Main tables to display actual stats after battle
+        mainTable1 = PrettyTable()
+        mainTable2 = PrettyTable()
+        statsDetailsTable1 = PrettyTable()
+        statsDetailsTable2 = PrettyTable()        
         
+        mainTable1.field_names = ["Pokemon", "Health", "Power"]
+        mainTable2.field_names = ["Pokemon", "Health", "Power"]
+          
+        player1_final_power = __ValidateFinalPowerFormat(player1_power, player1_previousPower)
+        player2_final_power = __ValidateFinalPowerFormat(player2_power, player2_previousPower)
+        player1_power_details = __ValidatePowerDetailsFormat(player1_powerIncrease, player1_powerDecrease, player1_previousPower, player1_final_power)
+        player2_power_details = __ValidatePowerDetailsFormat(player2_powerIncrease, player2_powerDecrease, player2_previousPower, player2_final_power)
         
+        mainTable1.add_row([player1_pokemonName, player1_health, player1_final_power])
+        mainTable2.add_row([player2_pokemonName, player2_health, player2_final_power])
+        
+        mainTable1_str = mainTable1.get_string().splitlines()
+        mainTable2_str = mainTable2.get_string().splitlines()
+        
+        main_combined_Table = ""
+        for row1, row2, in zip(mainTable1_str, mainTable2_str):
+            main_combined_Table += f"{row1}  {row2}\n"
+        
+        print(main_combined_Table)
+        print(player1_powerIncrease)
+        print(player1_powerDecrease)
+        print()
+        print(player2_powerIncrease)
+        print(player2_powerDecrease)
+        
+        input()           
