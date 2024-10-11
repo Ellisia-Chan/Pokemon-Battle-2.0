@@ -222,16 +222,16 @@ class DisplayManager:
         mainTable1.field_names = ["Pokemon", "Health", "Power"]
         mainTable2.field_names = ["Pokemon", "Health", "Power"]
         
-        player1_index = player1_pokemon[0]
+        player1_index = player1_pokemon
         player1_pokemonName = player1_index[0]
         player1_health = player1_index[1]
         player1_power = player1_index[2]
         
-        player2_index = player2_pokemon[0]
+        player2_index = player2_pokemon
         player2_pokemonName = player2_index[0]
         player2_health = player2_index[1]
         player2_power = player2_index[2]
-        
+
         previewTable1.add_row([player1_pokemonName, "?", "?"])
         previewTable2.add_row([player2_pokemonName, "?", "?"])
         
@@ -302,6 +302,8 @@ class DisplayManager:
         print(main_combined_Table)
         print(stats_detail_combined_Table)
     
-    def DisplayBattleWinner(self, Winner):
+    def DisplayBattleWinner(self, Winner, power_difference_str):
+        print("{:<20}{:<0}".format("", "======== Battle Winner ========"))
+        print("{:<28}{:<0}".format("", f"🎉 {Winner} 🎉\n"))
+        print("{:<30}{:<0}".format("", f"{power_difference_str}"))
         input()
-        pass

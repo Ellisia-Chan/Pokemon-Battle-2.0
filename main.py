@@ -158,8 +158,8 @@ class Gameplay:
             
     def MainBattle(self):
         self.display_Manager.DisplayMainBattleStats(
-            self.game_Manager.GetPlayer_1_SelectedPokemon,
-            self.game_Manager.GetPlayer_2_SelectedPokemon,
+            self.game_Manager.GetPlayer_1_BattlePokemon,
+            self.game_Manager.GetPlayer_2_BattlePokemon,
             self.game_Manager.GetPlayer_1_PreviousPower,
             self.game_Manager.GetPlayer_2_PreviousPower,
             self.game_Manager.GetPlayer_1_Selected_Pokemon_Power_Increase,
@@ -172,7 +172,8 @@ class Gameplay:
         
         self.game_Manager.BattleWinner()  
         self.display_Manager.DisplayBattleWinner(
-            self.game_Manager.Get_Battle_Winner
+            self.game_Manager.Get_Battle_Winner,
+            self.game_Manager.Get_Power_Difference_str
         )
                       
 if __name__ == "__main__":
