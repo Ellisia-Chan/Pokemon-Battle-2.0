@@ -1,9 +1,14 @@
 import PokemonArray as pa
+import BattleStatsManager as BSM
 import random
 import time
 
 class GameManager:
     def __init__(self) -> None:
+        # =================================================
+        # Stats Manager for handling data across all battles
+        # =================================================
+        self.stats_manager = BSM.BattleStatsManager()
         # ==============================================
         # Pokemon Array
         # Contains the list of the available pokemons
@@ -36,6 +41,9 @@ class GameManager:
         # ==================================
         self.battle_number = 0
         self.Battle_Winner = ""
+        self.player1_unused = 0
+        self.player2_unused = 0
+        self.all_pokemon_is_Selected = False
         
         # =======================================
         # Stats holder for previous values for
@@ -55,6 +63,11 @@ class GameManager:
     def PokemonArraySelection(self, index) -> bool:
         selected_indexes = []
         items_to_remove = []
+        
+        GREEN = "\033[32m"
+        RED = "\033[31m"
+        YELLOW = "\033[33m"
+        RESET = "\033[0m"
 
         def validate_selection(selected, max_limit):
             if len(selected) == 0:
@@ -81,16 +94,16 @@ class GameManager:
             return False
 
         if index == 0:
-            print("Select a Maximum of 4 Pokemons\nINFO: Select 3-4 Pokemons to use for battle (Ex. Input: 1 2 3 4)\n")
-            self.player_1_index = list(map(int, input("Player 1 select sa Pokemon: ").split(" ")))
+            print(f"Select a Maximum of 4 Pokemons\n{YELLOW}INFO:{RESET} Select 3-4 Pokemons to use for battle (Ex. Input: 1 2 3 4)\n")
+            self.player_1_index = list(map(int, input(f"{GREEN}Player 1{RESET} select sa Pokemon: ").split(" ")))
 
             if validate_selection(self.player_1_index, 4):
                 return True
             if process_selection(self.player_1_index, self.player_1_array):
                 return True
         else:
-            print(f"Please Select {len(self.player_1_index)} Pokemons\nINFO: Select 3-4 Pokemons to use for battle (Ex. Input: 1 2 3 4)\n")
-            self.player_2_index = list(map(int, input("Player 2 selects a Pokemon: ").split(" ")))
+            print(f"Please Select {len(self.player_1_index)} Pokemons\n{YELLOW}INFO:{RESET} Select 3-4 Pokemons to use for battle (Ex. Input: 1 2 3 4)\n")
+            self.player_2_index = list(map(int, input(f"{RED}Player 2{RESET} selects a Pokemon: ").split(" ")))
 
             if validate_selection(self.player_2_index, len(self.player_1_index)):
                 return True
@@ -109,29 +122,52 @@ class GameManager:
     # Battle
     # ==========================================
     def BattlePokemonSelection(self, index) -> bool:
+        GREEN = "\033[32m"
+        RED = "\033[31m"
+        YELLOW = "\033[33m"
+        RESET = "\033[0m"
+        COLOR = GREEN if index == 0 else RED
+        
+        if self.all_pokemon_is_Selected and index == 0:
+            print(f"{YELLOW}All Pokemon is Used. Battle Can be Ended Now{RESET}")
+            print(f"Enter {RED}EXIT{RESET} to end Battle or {GREEN}Press Enter Key{RESET} to Continue Battle")
+            exit_input = input("> ").lower()
+            
+            if exit_input == "exit":
+                return False, True
+            elif exit_input != "exit" and exit_input != "":
+                print("Wrong Input. Try Again")
+                return True, False
+                
+        
         print("Select 1 pokemon to use for battle\n")        
-        player_selection = int(input(f"Player {index + 1} Select a Pokemon for Battle: "))
+        player_selection = int(input(f"{COLOR}Player {index + 1}{RESET} Select a Pokemon for Battle: "))
         
         player_array = self.player_1_array if index == 0 else self.player_2_array
         selected_pokemon_attr = 'player_1_selected_Pokemon' if index == 0 else 'player_2_selected_Pokemon'
 
         if player_selection <= 0:
             print(f"Selected Index is less than or equal to zero. Please try again.")
-            return True
+            return True, False
         elif player_selection > len(player_array):
             print(f"Selected Index is greater than {len(player_array)}. Please try again.")
-            return True
+            return True, False
         else:
             setattr(self, selected_pokemon_attr, player_array[player_selection - 1])
             selected_pokemon = getattr(self, selected_pokemon_attr)
             selected_pokemon[5] = True
-            
-            return False
+
+            return False, False
     
     def BattlePreparation(self, index) -> bool:
         player_selected = self.player_1_selected_Pokemon if index == 0 else self.player_2_selected_Pokemon
         
         player_actions = {"use_potion": False, "use_poison": False}
+        
+        GREEN = "\033[32m"
+        RED = "\033[31m"
+        YELLOW = "\033[33m"
+        RESET = "\033[0m"
         
          # Helper methods for potion and poison effects
         def __UsePotion(player) -> int:
@@ -174,38 +210,38 @@ class GameManager:
         
         # Poison action prompt refactored
         if player_selected[3] > 0:
-            print("INFO: Poison Reduce Opponents Power by Random Percentage (10%, 30%, 50%)\n")
-            use_poison = input("Use poison on the opponent? [Y/N]: ").strip().lower()
+            print(f"{YELLOW}INFO:{RESET} {RED}Poison{RESET} Reduce Opponents Power by Random Percentage (10%, 30%, 50%)\n")
+            use_poison = input(f"Use {RED}poison{RESET} on the opponent? [Y/N]: ").strip().lower()
             if use_poison == "y":
                 player_actions["use_poison"] = True
-                print("Poison will be applied to the opponent\n")
+                print(f"{RED}Poison{RESET} will be applied to the opponent\n")
                 time.sleep(1)
             elif use_poison == "n":
-                print("No Poison used\n")
+                print(f"No {RED}Poison{RESET} used\n")
                 time.sleep(1)
             else:
                 print("Invalid input. Please try again.")
                 return True
         else:
-            print("No available Poison")
+            print(f"No available {RED}Poison{RESET}")
             input("Press enter to continue\n")
         
         # Potion action prompt refactored
         if player_selected[4] > 0:
-            print("INFO: Potion Increase Your Pokemon Power by Random Percentage (10%, 30%, 50%)\n")
-            use_potion = input("Use Potion to increase power? [Y/N]: ").strip().lower()
+            print(f"{YELLOW}INFO:{RESET} {GREEN}Potion{RESET} Increase Your Pokemon Power by Random Percentage (10%, 30%, 50%)\n")
+            use_potion = input(f"Use {GREEN}Potion{RESET} to increase power? [Y/N]: ").strip().lower()
             if use_potion == "y":
                 player_actions["use_potion"] = True
-                print("Potion will be applied\n")
+                print(f"{GREEN}Potion{RESET} will be applied\n")
                 time.sleep(1)
             elif use_potion == "n":
-                print("No Potion used\n")
+                print(f"No {GREEN}Potion{RESET} used\n")
                 time.sleep(1)
             else:
                 print("Invalid input. Please try again.")
                 return True
         else:
-            print("No available Potion")
+            print(f"No available {GREEN}Potion{RESET}")
             input("Press enter to continue\n")
             
         if index == 0:
@@ -257,35 +293,93 @@ class GameManager:
         GREEN = "\033[32m"
         RED = "\033[31m"
         RESET = "\033[0m"
+        # If Player 1 wins
         if self.player_1_selected_Pokemon[2] > self.player_2_selected_Pokemon[2]:
-            self.Battle_Winner = "Player 1"
+            self.Battle_Winner = f"{GREEN}Player 1{RESET}"
+            self.stats_manager.GetPlayer1_win_count = 1
+
+            # Power difference string
             self.power_difference_str = f"{GREEN}{self.player_1_selected_Pokemon[2]}{RESET} > {RED}{self.player_2_selected_Pokemon[2]}{RESET}"
+
+            # Save previous health and power for both players
+            self.player_1_previous_health = self.player_1_selected_Pokemon[1]
+            self.player_1_selected_Pokemon[2] = self.player_1_previous_power
             
-            self.player_1_selected_Pokemon[1] += int(self.player_1_selected_Pokemon[1] * 0.10)
-            self.player_1_selected_Pokemon[2] = self.player_1_previous_power + int(self.player_1_previous_power * 0.05)
+            self.player_2_previous_health = self.player_2_selected_Pokemon[1]
+            self.player_2_selected_Pokemon[2] = self.player_2_previous_power
+
+            # Apply the correct changes when Player 1 wins
+            self.player_1_selected_Pokemon[1] += int(self.player_1_previous_health * 0.05)  # Increase Player 1's health by 5%
+            self.player_1_selected_Pokemon[2] += int(self.player_1_previous_power * 0.05)   # Increase Player 1's power by 5%
             
-            self.player_2_selected_Pokemon[1] += int(self.player_2_selected_Pokemon[1] * 0.05)
-            self.player_2_selected_Pokemon[2] = self.player_2_previous_power + int(self.player_2_previous_power * 0.03)
-                       
+            self.player_2_selected_Pokemon[1] -= int(self.player_2_previous_health * 0.10)  # Decrease Player 2's health by 10%
+            self.player_2_selected_Pokemon[2] += int(self.player_2_previous_power * 0.03)   # Increase Player 2's power by 3%
+
+        # If Player 2 wins
         elif self.player_1_selected_Pokemon[2] < self.player_2_selected_Pokemon[2]:
-            self.Battle_Winner = "Player 2"
+            self.Battle_Winner = f"{RED}Player 2{RESET}"
+            self.stats_manager.GetPlayer2_win_count = 1
+
+            # Power difference string
             self.power_difference_str = f"{RED}{self.player_1_selected_Pokemon[2]}{RESET} < {GREEN}{self.player_2_selected_Pokemon[2]}{RESET}"
+
+            # Save previous health and power for both players
+            self.player_1_previous_health = self.player_1_selected_Pokemon[1]
+            self.player_1_selected_Pokemon[2] = self.player_1_previous_power 
+
+            self.player_2_previous_health = self.player_2_selected_Pokemon[1]
+            self.player_2_selected_Pokemon[2] = self.player_2_previous_power
+
+            # Apply the correct changes when Player 2 wins
+            self.player_2_selected_Pokemon[1] += int(self.player_2_previous_health * 0.05)  # Increase Player 2's health by 5%
+            self.player_2_selected_Pokemon[2] += int(self.player_2_previous_power * 0.05)   # Increase Player 2's power by 5%
             
-            self.player_2_selected_Pokemon[1] += int(self.player_2_selected_Pokemon[1] * 0.10)
-            self.player_2_selected_Pokemon[2] = self.player_2_previous_power + int(self.player_2_previous_power * 0.05)
-            
-            self.player_1_selected_Pokemon[1] += int(self.player_1_selected_Pokemon[1] * 0.05)
-            self.player_1_selected_Pokemon[2] = self.player_1_selected_Pokemon[2] + int(self.player_1_previous_power * 0.03)            
+            self.player_1_selected_Pokemon[1] -= int(self.player_1_previous_health * 0.10)  # Decrease Player 1's health by 10%
+            self.player_1_selected_Pokemon[2] += int(self.player_1_previous_power * 0.03)   # Increase Player 1's power by 3%
+
+        # If it's a tie
         else:
             self.Battle_Winner = "Tie"
+            self.stats_manager.GetTie_count = 1
+
             self.power_difference_str = f"{self.player_1_selected_Pokemon[2]} == {self.player_2_selected_Pokemon[2]}"
             
+            # Reset power to previous values (no changes in a tie)
             self.player_1_selected_Pokemon[2] = self.player_1_previous_power
             self.player_2_selected_Pokemon[2] = self.player_2_previous_power
-    
+
+    # ====================================
+    # Method that handle health adjustment
+    # After every battle
+    # ====================================
     def FatigueEffects(self):
-        pass
+        self.player_1_selected_Pokemon[1] = self.player_1_selected_Pokemon[1]
     
+    # Check if pokemons is used, if all is used
+    # the battle can end or continue base from
+    # players decision
+    def CheckIfAllPokemonIsSelected(self):
+        player1_not_selected = 0
+        player2_not_selected = 0
+        all_selected_count = 0
+        
+        for i in self.player_1_array:
+            if i[-1] == False:
+                player1_not_selected += 1
+            elif i[-1] == True:
+                all_selected_count += 1
+                
+        for i in self.player_2_array:
+            if i[-1] == False:
+                player2_not_selected += 1
+            elif i[-1] == True:
+                all_selected_count += 1
+                
+        if len(self.player_1_array) + len(self.player_2_array) == all_selected_count:
+            self.all_pokemon_is_Selected = True
+        
+        self.player1_unused = player1_not_selected
+        self.player2_unused = player2_not_selected
     # =======================================
     # Method for setting Values
     # =======================================
@@ -323,17 +417,6 @@ class GameManager:
     @property
     def GetPlayer_2_BattlePokemon(self) -> list:
         return self.player_2_selected_Pokemon
-    
-    # return previous health of pokemons after a battle
-    # which is affected by fatigue and increase by 
-    # 10 and 5 points
-    @property
-    def GetPlayer_1_previousHealth(self) -> int:
-        return self.player_1_previous_health
-
-    @property
-    def GetPlayer_2_previousHealth(self) -> int:
-        return self.player_2_previous_health
     
     # return previous power after poison and poitons
     # are applied
@@ -375,10 +458,49 @@ class GameManager:
             raise ValueError("Value cannot be negative")
         self.battle_number += value
     
+    # Get the winner of the battle
     @property
     def Get_Battle_Winner(self) -> str:
         return self.Battle_Winner
     
+    # Get the str format of power difference between
+    # the two players
     @property
     def Get_Power_Difference_str(self) -> str:
         return self.power_difference_str
+    
+    # Get Win Counts and Ties
+    @property
+    def Player1_win_count(self):
+        return self.stats_manager.GetPlayer1_win_count
+    
+    @property
+    def Player2_win_count(self):
+        return self.stats_manager.GetPlayer2_win_count
+    
+    @property
+    def Tie_count(self):
+        return self.stats_manager.GetTie_count
+    
+    # Get Previous player HPs
+    @property
+    def GetPlayer1_prev_HP(self):
+        return self.player_1_previous_health
+    
+    @property
+    def GetPlayer2_prev_HP(self):
+        return self.player_2_previous_health
+    
+    # Get bool if all pokemons is selected
+    @property
+    def Is_all_pokemone_selected(self) -> bool:
+        return self.all_pokemon_is_Selected
+
+    @property
+    def GetPlayer1_unused_count(self):
+        return self.player1_unused
+
+    @property
+    def GetPlayer2_unused_count(self):
+        return self.player2_unused
+    

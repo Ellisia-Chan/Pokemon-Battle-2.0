@@ -13,9 +13,12 @@ class Gameplay:
         self.game_Manager = GM.GameManager()
         self.display_Manager = DP.DisplayManager()
         
+        # Battle Variable Flag
+        self.all_pokemons_isUsed = False
+     
         # Start the program
         self.main()
-     
+        
     # =============================   
     # Main Game Method    
     # =============================
@@ -28,14 +31,18 @@ class Gameplay:
         # =====================================
         # Pokemon Battle Loop
         # =====================================
-        all_pokemons_isUsed = False
-        while not all_pokemons_isUsed:
+        while not self.all_pokemons_isUsed:
             # Selection of pokemon that will be
             # use for battle
-            self.Battle_Pokemon_Selection()
+            self.all_pokemons_isUsed = self.Battle_Pokemon_Selection()
+            if self.all_pokemons_isUsed:
+                break
+            
             self.BattlePreparation()
             self.MainBattle()
+            self.PostBattleAdjustments()
 
+        print("Program Ended")
     def PokemonArraySelection(self) -> None:
         # ==============================
         #  Pokemon array selection for
@@ -68,12 +75,13 @@ class Gameplay:
                 print("\033c", end="")
                 continue
             
-    def Battle_Pokemon_Selection(self) -> None:        
+    def Battle_Pokemon_Selection(self) -> bool:        
         # =====================================
         # Pokemon Selection for Battle
         # =====================================
         self.game_Manager.SetSelectedPokemonsToNull()
         self.game_Manager.SetChangedPokemonPowerToNull() 
+        self.game_Manager.CheckIfAllPokemonIsSelected()
         
         count = 0
         while count != 2:
@@ -83,9 +91,12 @@ class Gameplay:
                         self.game_Manager.GetPlayer_2_SelectedPokemon,
                         self.game_Manager.GetPlayer_1_BattlePokemon,
                         self.game_Manager.GetPlayer_2_BattlePokemon,
-                        count)
+                        count,
+                        self.game_Manager.Is_all_pokemone_selected,
+                        self.game_Manager.GetPlayer1_unused_count,
+                        self.game_Manager.GetPlayer2_unused_count)
                 
-                selection_Errors = self.game_Manager.BattlePokemonSelection(count)
+                selection_Errors, exit = self.game_Manager.BattlePokemonSelection(count)
                 
                 # Check IndexError for user input selections
                 if selection_Errors: 
@@ -95,6 +106,9 @@ class Gameplay:
                 
                 count += 1
                 
+                if exit:
+                    return True
+                       
                 # Clear the Console for better UX
                 print("\033c", end="")
                 
@@ -109,7 +123,10 @@ class Gameplay:
                     self.game_Manager.GetPlayer_2_SelectedPokemon,
                     self.game_Manager.GetPlayer_1_BattlePokemon,
                     self.game_Manager.GetPlayer_2_BattlePokemon,
-                    count)
+                    count,
+                    self.game_Manager.Is_all_pokemone_selected,
+                    self.game_Manager.GetPlayer1_unused_count,
+                    self.game_Manager.GetPlayer2_unused_count)
             print("{:<45}{:<0}".format("", "Preparing Pokemons"))
             time.sleep(2)   
             print("\033c", end="")
@@ -173,8 +190,24 @@ class Gameplay:
         self.game_Manager.BattleWinner()  
         self.display_Manager.DisplayBattleWinner(
             self.game_Manager.Get_Battle_Winner,
-            self.game_Manager.Get_Power_Difference_str
+            self.game_Manager.Get_Power_Difference_str,
+            self.game_Manager.Player1_win_count,
+            self.game_Manager.Player2_win_count,
+            self.game_Manager.Tie_count
         )
-                      
+        
+    def PostBattleAdjustments(self):
+        self.display_Manager.DisplayBattleStatsAdjustment(
+            self.game_Manager.Get_Battle_Winner,
+            self.game_Manager.GetPlayer_1_BattlePokemon,
+            self.game_Manager.GetPlayer1_prev_HP,
+            self.game_Manager.GetPlayer_1_PreviousPower,
+            self.game_Manager.GetPlayer_2_BattlePokemon,
+            self.game_Manager.GetPlayer2_prev_HP,
+            self.game_Manager.GetPlayer_2_PreviousPower
+        )
+        self.display_Manager.DisplayFatigueAdjustment()
+    
+        
 if __name__ == "__main__":
     Gameplay()
