@@ -9,7 +9,7 @@ class DisplayManager:
         RED = "\033[31m"
         YELLOW = "\033[33m"
         RESET = "\033[0m"
-        print("{:>20}{:>0}".format("", "🔥 Pokemon Battle 🔥"))
+        print("{:>20}{:>0}".format("", "🔥 Pokemon Battle 🔥\n"))
         print(f"{YELLOW}INFO:{RESET} Select 3-4 pokemon to be use for battle")
         print(f"💉 {GREEN}Potion{RESET} is used to increase your Power")    
         print(f"💀 {RED}Poison{RESET} is used to decrease opponents Power\n")
@@ -28,7 +28,7 @@ class DisplayManager:
         print("- To end battle, all pokemon for both players")
         print("must be used\n")
         
-        input("Press Enter To Start")
+        input(f"Press {GREEN}Enter{RESET} To Start")
         print("\033c", end="")
         
         
@@ -49,6 +49,8 @@ class DisplayManager:
             poisons = pokemon_list_index[3]
             potions = pokemon_list_index[4]
             table.add_row([i+1, pokemon, health, power, poisons, potions])
+            
+        print("{:>20}{:>0}".format("", "🔥 Pokemon Battle 🔥\n"))  
         print(table)
         print()
     
@@ -124,11 +126,11 @@ class DisplayManager:
             all_Pokemon_Used = f"{GREEN}YES{RESET}"
         else: all_Pokemon_Used = f"{RED}NO{RESET}"
         
-        print("{:>45}{:>0}".format("", "🔥 Battle Pokemon Selection 🔥"))
+        print("{:>45}{:>0}".format("", "🔥 Battle Pokemon Selection 🔥\n"))
         print("{:<2}{:<0}".format("", f"{YELLOW}INFO:{RESET} To end battle, All players must use all selected pokemon.\n"))
         print("{:<2}{:<0}".format("", f"All Pokemon Used?: {all_Pokemon_Used}")) 
-        print("{:<2}{:<0}".format("", f"Player 1 Unused: {RED}{player1_unused}{RESET}"))
-        print("{:<2}{:<0}".format("", f"Player 2 Unused: {RED}{player2_unused}{RESET}"))
+        print("{:<2}{:<0}".format("", f"{GREEN}Player 1{RESET} Unused Pokemon: {RED}{player1_unused}{RESET}"))
+        print("{:<2}{:<0}".format("", f"{RED}Player 2{RESET} Unused Pokemon: {RED}{player2_unused}{RESET}"))
         print(combined_Table)
     
         if len(player1_battle_pokemon) == 0:
@@ -143,8 +145,8 @@ class DisplayManager:
             
         print("{:<10}{:<60}{:<0}".format(
             "",
-            f"Player 1 Pokemon: {player1_battle_pokemon}",
-            f"Player 2 Pokemon: {player2_battle_pokemon}\n"
+            f"{GREEN}Player 1{RESET} Pokemon: {player1_battle_pokemon}",
+            f"{RED}Player 2{RESET} Pokemon: {player2_battle_pokemon}\n"
         ))
         
     # =======================================
@@ -170,7 +172,7 @@ class DisplayManager:
         
         table.add_row([player_pokemon, player_health, player_power, player_poisons, player_potions])
         
-        print("{:>13}{:>0}".format("", "🔥 Battle Preparation 🔥"))
+        print("{:>13}{:>0}".format("", "🔥 Battle Preparation 🔥\n"))
         print(table)
         print()
     
@@ -258,7 +260,7 @@ class DisplayManager:
             preview_combined_Table += f"{row1}  {row2}\n"
         
         print(preview_combined_Table)
-        input("Press Enter to Begin Battle")
+        input(f"Press {GREEN}Enter{RESET} to Begin Battle")
         print("\033c", end="")
         
         # Main tables to display actual stats after battle
@@ -306,10 +308,13 @@ class DisplayManager:
         for row1, row2, in zip(statsDetailsTable1_str, statsDetailsTable2_str):
             stats_detail_combined_Table += f"{row1}  {row2}\n"
         
-        print("{:<30}{:<0}".format("", f"Battle {battleNumber+1}"))     
+        print("{:<26}{:<0}".format("", f"🔥 Battle {battleNumber+1} 🔥\n"))     
         print(main_combined_Table)
         print(stats_detail_combined_Table)
-    
+        
+    # =========================================
+    # Display the Battle Winner
+    # =========================================
     def DisplayBattleWinner(self, Winner, power_difference_str,
                             player1_win, player2_win, tie):
         GREEN = "\033[32m"
@@ -317,17 +322,21 @@ class DisplayManager:
         YELLOW = "\033[33m"
         RESET = "\033[0m"
         
-        print("{:<20}{:<0}".format("", "======== Battle Winner ========"))
-        print("{:<28}{:<0}".format("", f"🎉 {Winner} 🎉\n"))
-        print("{:<32}{:<0}".format("", f"{power_difference_str}\n"))
-        print("{:<13}{:<28}{:<28}{:<0}".format(
+        print("{:<20}{:<0}".format("", "🔥 ======== Battle Winner ======== 🔥"))
+        print("{:<32}{:<0}".format("", f"🎉 {Winner} 🎉\n"))
+        print("{:<34}{:<0}".format("", f"{power_difference_str}\n"))
+        print("{:<17}{:<28}{:<28}{:<0}".format(
             "",
             f"{GREEN}Player 1{RESET} Wins: {player1_win}",
             f"{RED}Player 2{RESET} Wins: {player2_win}",
             f"Ties: {tie}"))
-        input("\nPress Enter to Continue")
+        input(f"\nPress {GREEN}Enter{RESET} to Continue")
         print("\033c", end="")
-        
+    
+    # =======================================
+    # Display the winner and loser stats
+    # adjustment
+    # =======================================
     def DisplayBattleStatsAdjustment(self, winner,
                                      player1_pokemon, player1_prev_HP, player1_prev_Pwr,
                                      player2_pokemon, player2_prev_HP, player2_prev_Pwr
@@ -396,6 +405,14 @@ class DisplayManager:
             
             winner_perc_table.add_row(["Health +5% - Power +5%"])
             loser_perc_table.add_row(["Health -10% - Power +3%"])
+        else:
+            winner_table.title = f"{GREEN}Player 1{RESET}"
+            loser_table.title = f"{RED}Player 2{RESET}"
+            winner_perc_table.field_names = [f"{GREEN}Player 1{RESET}: No adjustment"]
+            loser_perc_table.field_names = [f"{RED}Player 2{RESET}: No adjustment"]
+                   
+            winner_table.add_row([player1_pokemon[0], player1_pokemon[1], player1_pokemon[2]])
+            loser_table.add_row([player2_pokemon[0], player2_pokemon[1], player2_pokemon[2]])
             
         winner_perc_table_str = winner_perc_table.get_string().splitlines()
         loser_perc_table_str = loser_perc_table.get_string().splitlines()
@@ -411,15 +428,47 @@ class DisplayManager:
         for row1, row2 in zip(winner_perc_table_str, loser_perc_table_str):
             perc_combine_Table += f"{row1}  {row2}\n"
         
-        print("{:<30}{:<0}".format("", "Stats Adjustment\n"))
+        print("{:<19}{:<0}".format("", "🔥 Stats Adjustment 🔥\n"))
         print(perc_combine_Table)
         print(main_combine_Table)
         
-        input("Press Enter to Continue")
+        input(f"Press {GREEN}Enter{RESET} to Continue")
         print("\033c", end="")
- 
-    def DisplayFatigueAdjustment(self):  
-        print("{:<33}{:<0}".format("", "Pokemon Fatigue Effects\n"))
-        input()
+    
+    # ======================================
+    # Display details of the Fatigue health
+    # Adjustment
+    # ======================================
+    def DisplayFatigueAdjustment(self, player1_pokemon, player2_pokemon, player1_prev_HP, player2_prev_HP):
+        GREEN = "\033[32m"
+        RED = "\033[31m"
+        YELLOW = "\033[33m"
+        RESET = "\033[0m"
+          
+        table1 = PrettyTable()
+        table2 = PrettyTable()
         
+        table1.title = f"{GREEN}Player 1{RESET}"
+        table2.title = f"{RED}Player 2{RESET}"
+        table1.field_names = ["Pokemon", "Health"]
+        table2.field_names = ["Pokemon", "Health"]
         
+        p1_health_str = f"{player1_prev_HP} -> {RED}{player1_pokemon[1]}{RESET}"
+        p2_health_str = f"{player2_prev_HP} -> {RED}{player2_pokemon[1]}{RESET}"
+        
+        table1.add_row([player1_pokemon[0], p1_health_str])
+        table2.add_row([player2_pokemon[0], p2_health_str])
+        
+        table1_str = table1.get_string().splitlines()
+        table2_str = table2.get_string().splitlines()
+        
+        combine_table = ""
+        for row1, row2 in zip(table1_str, table2_str):
+            combine_table += f"{row1}  {row2}\n"
+           
+        print("{:<10}{:<0}".format("", "🔥 Pokemon Fatigue Effects 🔥\n"))
+        print(f"{YELLOW}Due to Battle Fatigue Both Player Pokemons Health is Reduced by 2%{RESET}\n")
+        print(combine_table)
+        print()
+        input(f"Press {GREEN}Enter{RESET} to continue to Pokemon Selection")
+        print("\033c", end="")       
