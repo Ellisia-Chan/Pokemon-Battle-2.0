@@ -4,15 +4,6 @@
 ![Generic badge](https://img.shields.io/badge/Development%3f-Complete-blue.svg)
 ![Developer](https://img.shields.io/badge/Developer-Ellisia-pink)
 
-## Navigation
-
-* [Project Structure](#Project-Structure)
-* [Key Files](#Key-Files)
-* [Installation](#Installation)
-* [Running the Game](#Running-the-Game)
-* [Features](#Features)
-* [Preview](#Preview) 
-
 This Python project simulates a turn-based Pokemon battle game with features like:
 
 - **Pokemon Selection:** Choose 3-4 Pokemon from a pool of 10.
@@ -22,6 +13,16 @@ This Python project simulates a turn-based Pokemon battle game with features lik
 - **Fatigue Effects:**  Both Pokemon's health decrease slightly after every battle due to fatigue.
 - **Battle Stats Tracking:**  Track the number of wins, losses, and ties for each player.
 - **User-Friendly Interface:**  Utilizes the `prettytable` library for clear, formatted display of Pokemon information and battle statistics.
+- 
+## Navigation
+
+* [Project Structure](#Project-Structure)
+* [Key Files](#Key-Files)
+* [Installation](#Installation)
+* [Running the Game](#Running-the-Game)
+* [Features](#Features)
+* [Preview](#Preview) 
+
 
 
 ## Project Structure:
