@@ -1,7 +1,17 @@
-## Pokemon-Battle-2.0
+# Pokemon-Battle-2.0
+
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-Yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
 ![Generic badge](https://img.shields.io/badge/Development%3f-Complete-blue.svg)
 ![Developer](https://img.shields.io/badge/Developer-Ellisia-pink)
+
+## Navigation
+
+* [Project Structure](#Project-Structure)
+* [Key Files](#Key-Files)
+* [Installation](#Installation)
+* [Running the Game](#Running-the-Game)
+* [Features](#Features)
+* [Preview](#Preview) 
 
 This Python project simulates a turn-based Pokemon battle game with features like:
 
@@ -14,7 +24,7 @@ This Python project simulates a turn-based Pokemon battle game with features lik
 - **User-Friendly Interface:**  Utilizes the `prettytable` library for clear, formatted display of Pokemon information and battle statistics.
 
 
-### Project Structure:
+## Project Structure:
 
 ```
 ├── BattleStatsManager.py
@@ -25,7 +35,7 @@ This Python project simulates a turn-based Pokemon battle game with features lik
 └── packages.py
 ```
 
-### Key Files:
+## Key Files:
 
 - **BattleStatsManager.py:**  Handles the tracking of battle statistics, including wins, losses, and ties.
 - **DisplayManager.py:**  Manages the display of various game elements, including menus, Pokemon information, battle stats, and game messages.
@@ -34,7 +44,7 @@ This Python project simulates a turn-based Pokemon battle game with features lik
 - **main.py:**  The entry point of the game, where the game loop and user interaction are managed.
 - **packages.py:**  Checks and installs necessary Python packages (like `prettytable`) if they are not already installed.
 
-### Installation:
+## Installation:
 
 1. **Clone the repository:**
    ```bash
@@ -46,7 +56,7 @@ This Python project simulates a turn-based Pokemon battle game with features lik
    python packages.py
    ```
 
-### Running the Game:
+## Running the Game:
 
 1. **Navigate to the project directory:**
    ```bash
@@ -57,16 +67,16 @@ This Python project simulates a turn-based Pokemon battle game with features lik
    python main.py
    ```
 
-### Features:
+## Features:
 
 - **Colorful Output:**  The game uses ANSI escape codes to make the output more visually appealing.
 - **User-Friendly Input:**  Prompts guide the player through the selection process and battle actions.
 - **Comprehensive Stats:**  Track wins, losses, and ties for each player, providing a clear overview of the game's outcome.
 - **Dynamic Adjustments:**  Health and power adjustments after each battle create an engaging and strategic experience.
 
-### Preview:
+## Preview:
 ![image](https://github.com/user-attachments/assets/f2c2a139-9686-4e5b-a391-d2a5696e6646)<br>
 ![image](https://github.com/user-attachments/assets/ea60e063-3742-4b1c-890d-fa7ba063c7a9)
 ![image](https://github.com/user-attachments/assets/e3fb341a-aa54-4b17-a04d-2ae4ee2b050a)
- ![image](https://github.com/user-attachments/assets/0ac59fab-3e37-4c4e-885f-20ba3fde2bdf)
+![image](https://github.com/user-attachments/assets/0ac59fab-3e37-4c4e-885f-20ba3fde2bdf)
 ![image](https://github.com/user-attachments/assets/f98ab8f9-79b3-4aeb-bc7b-80902576bc0b)
