@@ -20,9 +20,7 @@ This Python project simulates a turn-based Pokemon battle game with features lik
 ├── BattleStatsManager.py
 ├── DisplayManager.py
 ├── GameManager.py
-├── LICENSE
 ├── PokemonArray.py
-├── README.md
 ├── main.py
 └── packages.py
 ```
